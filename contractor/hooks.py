@@ -25,11 +25,21 @@ app_license = "MIT"
 # webform_include_js = {"doctype": "public/js/doctype.js"}
 # webform_include_css = {"doctype": "public/css/doctype.css"}
 
+fixtures = [
+    # export only those records that match the filters from the Role table
+    {"dt": "Custom Field", "or_filters": [
+		["dt", "=", "Opportunity Item"],
+		["dt", "=", "Item"]
+	]},
+]
+
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Opportunity" : "public/js/doctype/opportunity.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -102,13 +112,11 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Opportunity": {
+		"validate": "contractor.www.api.validate",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
