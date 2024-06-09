@@ -29,7 +29,8 @@ fixtures = [
     # export only those records that match the filters from the Role table
     {"dt": "Custom Field", "or_filters": [
 		["dt", "=", "Opportunity Item"],
-		["dt", "=", "Item"]
+		["dt", "=", "Opportunity"],
+		["dt", "=", "Item"],
 	]},
 ]
 
