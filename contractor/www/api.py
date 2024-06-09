@@ -43,7 +43,7 @@ def set_rate_of_group_items(doc):
                 rates[(item.group_item, group)] = 0
 
             rates[(item.group_item, group)] += item.amount
-        elif not item.series_number: 
+        elif item.series_number: 
             item.rate = item.base_rate = item.amount = item.base_amount = 0
 
     doc.group_items = []
