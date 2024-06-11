@@ -1,4 +1,14 @@
 frappe.ui.form.on("Opportunity", {
+    refresh: function(frm){
+        frm.set_query("item_code", "items", function(doc, cdt, cdn) {
+			let row = locals[cdt][cdn];
+            return {
+				filters: {
+					is_group: row.is_group
+				}
+			}
+		});
+    },
     set_series_number: function(frm, row){
         let latest_group = 0;
         let latest_sub = 0;
@@ -38,7 +48,7 @@ frappe.ui.form.on("Opportunity", {
 
             else row.series_number = latest_group + "_" + latest_sub;
         }
-        frm.refresh_field("series_number");
+        frm.refresh_field("items");
     }
 })
 frappe.ui.form.on("Opportunity Item", {
@@ -53,6 +63,7 @@ frappe.ui.form.on("Opportunity Item", {
     },
     items_add: function(frm ,cdt, cdn){
         frappe.model.set_value(cdt, cdn, "rate", 0.00);
+        frappe.model.set_value(cdt, cdn, "amount", 0.00);
         frappe.model.set_value(cdt, cdn, "base_rate", 0.00);
         frappe.model.set_value(cdt, cdn, "base_amount", 0.00);
     }
