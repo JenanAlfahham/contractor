@@ -1,6 +1,7 @@
 import frappe
+from frappe.model.mapper import get_mapped_doc
 
-# Custom Validation for Opportunity
+# Custom Validation for Opportunity & Project
 def validate(doc, method=None):
     set_series_number(doc)
     set_rate_of_group_items(doc)
@@ -52,8 +53,39 @@ def set_rate_of_group_items(doc):
             "item_code": group_item,
             "item_name": frappe.db.get_value("Item", group_item, "item_name"),
             "rate": rates[(group_item, group)],
-            "base_rate": rates[(group_item, group)] * doc.conversion_rate
+            "base_rate": rates[(group_item, group)] * doc.conversion_rate if doc.doctype == "Opportunity" else rates[(group_item, group)]
         })
         doc.append("group_items", new_item)
+
+
+@frappe.whitelist()
+def make_project(source_name, target_doc=None):
+	def postprocess(source, doc):
+		doc.project_type = "External"
+		doc.project_name = source.name
+
+	doc = get_mapped_doc(
+		"Sales Order",
+		source_name,
+		{
+			"Sales Order": {
+				"doctype": "Project",
+				"validation": {"docstatus": ["=", 1]},
+				"field_map": {
+					"name": "sales_order",
+					"base_grand_total": "estimated_costing",
+					"net_total": "total_sales_amount",
+				},
+			},
+            "Sales Order Item": {
+				"doctype": "Project Item",
+			},
+
+		},
+		target_doc,
+		postprocess,
+	)
+
+	return doc
 
             
