@@ -31,7 +31,9 @@ fixtures = [
 		["dt", "=", "Opportunity Item"],
 		["dt", "=", "Opportunity"],
 		["dt", "=", "Item"],
-		["dt", "=", "Project"]
+		["dt", "=", "Project"],
+		["dt", "=", "Quotation Item"],
+		["dt", "=", "Sales Order Item"],
 	]},
 
 	{"dt": "Property Setter", "or_filters": [
