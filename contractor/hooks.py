@@ -31,6 +31,13 @@ fixtures = [
 		["dt", "=", "Opportunity Item"],
 		["dt", "=", "Opportunity"],
 		["dt", "=", "Item"],
+		["dt", "=", "Project"]
+	]},
+
+	{"dt": "Property Setter", "or_filters": [
+		["doc_type", "=", "Opportunity Item"],
+		["doc_type", "=", "Quotation Item"],
+		["doc_type", "=", "Sales Order Item"],
 	]},
 ]
 
@@ -39,7 +46,9 @@ fixtures = [
 
 # include js in doctype views
 doctype_js = {
-    "Opportunity" : "public/js/doctype/opportunity.js"
+    "Opportunity" : "public/js/doctype/opportunity.js",
+	"Sales Order": "public/js/doctype/sales_order.js",
+	"Project" : "public/js/doctype/project.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -116,7 +125,10 @@ doctype_js = {
 doc_events = {
 	"Opportunity": {
 		"validate": "contractor.www.api.validate",
-	}
+	},
+	"Project": {
+		"validate": "contractor.www.api.validate",
+	},
 }
 
 # Scheduled Tasks
