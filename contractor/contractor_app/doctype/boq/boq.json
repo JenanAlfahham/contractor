@@ -1,0 +1,250 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-04-05 05:38:21.968438",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "group_item",
+  "unit",
+  "owners",
+  "start_date",
+  "expected_time_period",
+  "column_break_puvaq",
+  "item",
+  "project_qty",
+  "project",
+  "end_date",
+  "section_break_6qymy",
+  "material_costs",
+  "total_material_costs",
+  "section_break_ueyhe",
+  "labor_costs",
+  "total_labor_costs",
+  "section_break_kmiex",
+  "contractors_table",
+  "total_contractors",
+  "section_break_ykrqk",
+  "expenses_table",
+  "total_expenses",
+  "section_break_kkppl",
+  "total_cost",
+  "references_section",
+  "costing_note",
+  "column_break_lz9ie",
+  "line_id",
+  "amended_from",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "BOQ-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "group_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Group Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "label": "Unit",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "owners",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "expected_time_period",
+   "fieldtype": "Int",
+   "label": "Expected Time Period"
+  },
+  {
+   "fieldname": "column_break_puvaq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Contracting Items",
+   "options": "Item"
+  },
+  {
+   "fieldname": "project_qty",
+   "fieldtype": "Float",
+   "label": "Project QTY"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "section_break_6qymy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "material_costs",
+   "fieldtype": "Table",
+   "label": "Material costs",
+   "options": "Material costs"
+  },
+  {
+   "fieldname": "total_material_costs",
+   "fieldtype": "Currency",
+   "label": "Total Material costs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ueyhe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "labor_costs",
+   "fieldtype": "Table",
+   "label": "Labor costs",
+   "options": "Labor costs"
+  },
+  {
+   "fieldname": "total_labor_costs",
+   "fieldtype": "Currency",
+   "label": "Total Labor costs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_kmiex",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "contractors_table",
+   "fieldtype": "Table",
+   "label": "Contractors table",
+   "options": "Contractors table"
+  },
+  {
+   "fieldname": "total_contractors",
+   "fieldtype": "Currency",
+   "label": "Total Contractors",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ykrqk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "expenses_table",
+   "fieldtype": "Table",
+   "label": "Expenses Table",
+   "options": "Expenses Table"
+  },
+  {
+   "fieldname": "total_expenses",
+   "fieldtype": "Currency",
+   "label": "Total Expenses",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_kkppl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "costing_note",
+   "fieldtype": "Link",
+   "label": "Costing Note",
+   "options": "Costing Note",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_lz9ie",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "line_id",
+   "fieldtype": "Data",
+   "label": "Line Id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "BOQ",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "BOQ",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-04-05 05:38:21.968438",
+ "modified_by": "Administrator",
+ "module": "Contractor App",
+ "name": "BOQ",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
