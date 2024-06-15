@@ -8,6 +8,15 @@ frappe.ui.form.on("Opportunity", {
 				}
 			}
 		});
+        frm.add_custom_button(__("Costing Note"), function(){
+            frm.trigger("create_costing_note");
+        }, __("Create"))
+    },
+    create_costing_note: function(frm){
+        frappe.model.open_mapped_doc({
+			method: "contractor.www.api.create_costing_note",
+			frm: frm
+		})
     },
     set_series_number: function(frm, row){
         let latest_group = 0;
