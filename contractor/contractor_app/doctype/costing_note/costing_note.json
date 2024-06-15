@@ -1,0 +1,168 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-04-05 04:37:06.602822",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "project",
+  "opportunity",
+  "column_break_u5cmu",
+  "date",
+  "customer",
+  "tender_number",
+  "section_break_lae0y",
+  "costing_note_items",
+  "group_items",
+  "section_break_v8faf",
+  "costing_note_item_summary",
+  "totals_section",
+  "total_cost",
+  "total_target_selling_price",
+  "column_break_s1ebb",
+  "total_profit",
+  "profit_margin",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "COS-Note-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "COS-Note-.YYYY.-"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "opportunity",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Opportunity",
+   "options": "Opportunity"
+  },
+  {
+   "fieldname": "column_break_u5cmu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tender_number",
+   "fieldtype": "Data",
+   "label": "Tender Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_lae0y",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "costing_note_items",
+   "fieldtype": "Table",
+   "label": "Costing Note Items",
+   "options": "Costing Note Items"
+  },
+  {
+    "fieldname": "group_items",
+    "fieldtype": "Table",
+    "label": "Group Item",
+    "options": "Group Item",
+    "read_only": 1
+   },
+  {
+   "fieldname": "section_break_v8faf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "totals_section",
+   "fieldtype": "Section Break",
+   "label": "Totals"
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_target_selling_price",
+   "fieldtype": "Currency",
+   "label": "Total Target Selling price",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_s1ebb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_profit",
+   "fieldtype": "Currency",
+   "label": "Total Profit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "profit_margin",
+   "fieldtype": "Percent",
+   "label": "Profit Margin",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Costing Note",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-04-05 04:37:06.602822",
+ "modified_by": "Administrator",
+ "module": "Contractor App",
+ "name": "Costing Note",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
