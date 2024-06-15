@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import today  
 from frappe.model.mapper import get_mapped_doc
 
 # Custom Validation for Opportunity & Project
@@ -88,4 +89,53 @@ def make_project(source_name, target_doc=None):
 
 	return doc
 
-            
+@frappe.whitelist()
+def create_costing_note(source_name, target_doc=None):
+    doc = get_mapped_doc(
+        "Opportunity",
+        source_name,
+        {
+            "Opportunity": {
+                "doctype": "Costing Note",
+                "field_map": {"name": "opportunity", "party_name": "customer"},
+            },
+            "Opportunity Item": {
+                "doctype": "Costing Note Items",
+                "field_map": {"item_code": "item", "amount": "target_selling_price"},
+                "condition": lambda doc: not doc.is_group,
+            },
+            "Group Item": {
+                "doctype": "Group Item"
+            },
+        },
+        target_doc,
+    )
+    return doc
+
+
+@frappe.whitelist()
+def create_boq(source_name, target_doc=None):
+    item = frappe.flags.args.item_row
+    item = frappe._dict(item)
+    def set_missing_values(source, target):
+        target.naming_series = "BOQ-.YYYY.-"
+        target.group_item = item.group_item
+        target.item = item.item
+        target.unit = item.uom
+        target.project_qty = item.qty
+        target.start_date = today()
+        target.line_id = item.name
+
+    doc = get_mapped_doc(
+        "Costing Note",
+        source_name,
+        {
+            "Costing Note": {
+                "doctype": "BOQ",
+                "field_map": {"customer": "owners"},
+            },
+        },
+        target_doc,
+        set_missing_values,
+    )
+    return doc
