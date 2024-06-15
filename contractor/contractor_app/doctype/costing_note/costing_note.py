@@ -32,7 +32,7 @@ class CostingNote(Document):
 		self.total_cost = total_cost
 		self.total_target_selling_price = total_amount
 		self.total_profit = total_profit
-		self.profit_margin = self.total_profit / self.total_cost * 100
+		self.profit_margin = self.total_profit / self.total_cost * 100 if self.total_cost else 0
 
 		self.group_items = []
 		for group_item, group in rates:
