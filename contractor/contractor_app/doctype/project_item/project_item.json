@@ -8,7 +8,6 @@
  "field_order": [
   "is_group",
   "series_number",
-  "group_item",
   "item_code",
   "item_name",
   "column_break_dw6sl",
@@ -37,15 +36,6 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Series Number",
-   "read_only": 1
-  },
-  {
-   "columns": 1,
-   "fieldname": "group_item",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Group Item",
-   "options": "Item",
    "read_only": 1
   },
   {
@@ -94,7 +84,9 @@
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
-   "options": "Item Group"
+   "options": "Item Group",
+   "in_list_view": 1,
+   "columns": 1
   },
   {
    "fieldname": "description",

@@ -12,7 +12,7 @@ frappe.ui.form.on("Project", {
     set_series_number: function(frm, row){
         let latest_group = 0;
         let latest_sub = 0;
-        let group_item = null;
+        let item_group = null;
         
         // Iterate through the items table to get the latest Group/Sub item
         for (let i of frm.doc.items){
@@ -24,10 +24,10 @@ frappe.ui.form.on("Project", {
                     latest_sub += 1;
                 }
                 ///Set the Group Item to be the First Group Item Row
-                if (!group_item) group_item = i.item_code;
+                if (!item_group) item_group = i.item_group;
 
                 ///Set thee Group Item of the Current Item
-                i.group_item = group_item;
+                i.item_group = item_group;
                 break;
             }
 
@@ -35,7 +35,7 @@ frappe.ui.form.on("Project", {
                 if (i.is_group){
                     latest_group = parseInt(i.series_number)
                     latest_sub = 0;
-                    group_item = i.item_code;
+                    item_group = i.item_group;
                 }
                 else if (i.series_number) {
                     [latest_group, latest_sub] = get_group_sub(i.series_number)
@@ -54,12 +54,12 @@ frappe.ui.form.on("Project", {
 frappe.ui.form.on("Project Item", {
     is_group: function(frm ,cdt, cdn){
         let row = locals[cdt][cdn];
-        if (row.is_group && row.item_code) row.group_item = row.item_code;
+        if (row.is_group && row.item_code) row.item_group = row.item_group;
         frm.events.set_series_number(frm, row)
     },
     item_code: function(frm, cdt, cdn){
         let row = locals[cdt][cdn];
-        if (row.is_group) row.group_item = row.item_code;
+        if (row.is_group) row.item_group = row.item_group;
     },
     qty: function(frm, cdt, cdn){
         let row = locals[cdt][cdn];
@@ -74,7 +74,6 @@ frappe.ui.form.on("Project Item", {
         }
     },
     items_add: function(frm ,cdt, cdn){
-        console.log("$$$$")
         frappe.model.set_value(cdt, cdn, "rate", 0.00);
         frappe.model.set_value(cdt, cdn, "amount", 0.00);
     }

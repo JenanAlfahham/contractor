@@ -9,7 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "group_item",
+  "item_group",
   "unit",
   "owners",
   "start_date",
@@ -50,11 +50,11 @@
    "reqd": 1
   },
   {
-   "fieldname": "group_item",
+   "fieldname": "item_group",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Group Item",
-   "options": "Item",
+   "label": "Item Group",
+   "options": "Item Group",
    "reqd": 1
   },
   {
@@ -86,7 +86,7 @@
   {
    "fieldname": "item",
    "fieldtype": "Link",
-   "label": "Contracting Items",
+   "label": "Contracting Item",
    "options": "Item"
   },
   {

@@ -9,7 +9,7 @@
  "field_order": [
   "is_group",
   "series_number",
-  "group_item",
+  "item_group",
   "item",
   "uom",
   "qty",
@@ -39,11 +39,11 @@
   },
   {
    "columns": 1,
-   "fieldname": "group_item",
+   "fieldname": "item_group",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Group Item",
-   "options": "Item",
+   "label": "Item Group",
+   "options": "Item Group",
    "reqd": 1
   },
   {
