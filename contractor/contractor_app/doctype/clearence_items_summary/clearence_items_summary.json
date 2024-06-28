@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-04-05 04:54:57.711664",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "contracting_item_group",
+  "total"
+ ],
+ "fields": [
+  {
+   "fieldname": "contracting_item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Contracting item Group",
+   "options": "Item Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-04-05 04:54:57.711664",
+ "modified_by": "Administrator",
+ "module": "Contractor App",
+ "name": "Clearence Items Summary",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
