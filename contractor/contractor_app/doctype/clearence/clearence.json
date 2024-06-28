@@ -1,0 +1,992 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "naming_series:",
+  "creation": "2024-04-05 05:36:57.497648",
+  "default_view": "List",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+   "section_break_zfsyx",
+   "title",
+   "naming_series",
+   "customer",
+   "customer_name",
+   "transaction_date",
+   "number",
+   "clearence_status",
+   "column_break_5s0s5",
+   "company",
+   "sales_invoice",
+   "description",
+   "status",
+   "posting_date",
+   "posting_time",
+   "amended_from",
+   "address_and_contact",
+    "customer_address",
+    "address_display",
+    "contact_person",
+    "contact_display",
+    "contact_mobile",
+    "contact_email",
+    "territory",
+    "col_break4",
+    "shipping_address_name",
+    "shipping_address",
+    "company_address",
+    "company_address_display",
+    "currency_and_price_list",
+    "currency",
+    "conversion_rate",
+    "column_break2",
+    "selling_price_list",
+    "price_list_currency",
+    "plc_conversion_rate",
+    "ignore_pricing_rule",
+   "section_break_cvmux",
+   "type",
+   "project",
+   "sales_order",
+   "opportunity",
+   "column_break_stmer",
+   "contract_date",
+   "delivery_date",
+   "column_break_axrmq",
+   "advance_payment_discount",
+   "business_guarantee_insurance_deduction_rate",
+   "purchase_order",
+   "supplier",
+   "purchase_order_date",
+   "receipt_date",
+   "section_break_em08l",
+   "items",
+   "section_break_yzixi",
+   "total_qty",
+    "base_total",
+    "base_net_total",
+    "column_break_32",
+    "total_net_weight",
+    "total",
+    "net_total",
+   "section_break_ngtuz",
+   "clearence_items_summary",
+   "taxes_section",
+    "taxes_and_charges",
+    "column_break_38",
+    "shipping_rule",
+    "tax_category",
+    "section_break_40",
+    "taxes",
+    "sec_tax_breakup",
+    "other_charges_calculation",
+   "section_break_fwj9j",
+   "deductions",
+   "total_deductions",
+   "section_break_x3edo",
+   "previous_amount",
+   "column_break_qjdep",
+   "current_amount",
+   "column_break_nwujc",
+   "due_amount",
+   "section_break_43",
+    "base_total_taxes_and_charges",
+    "column_break_47",
+    "total_taxes_and_charges",
+    "totals",
+    "base_grand_total",
+    "base_rounding_adjustment",
+    "base_rounded_total",
+    "base_in_words",
+    "column_break5",
+    "grand_total",
+    "rounding_adjustment",
+    "rounded_total",
+    "in_words",
+    "advance_payments",
+    "base_advance_payment_discount_rate",
+   "base_business_insurance_discount_rate_value",
+    "column_break_0t5vc",
+   "advance_payment_discount_rate",
+   "business_insurance_discount_rate_value",
+   "total_after_deductions",
+   "paid_amount",
+   "paid_percentage"
+  ],
+  "fields": [
+   {
+     "fieldname": "section_break_zfsyx",
+     "fieldtype": "Section Break",
+     "options": "fa fa-user"
+    },
+    {
+     "allow_on_submit": 1,
+     "default": "{customer_name}",
+     "fieldname": "title",
+     "fieldtype": "Data",
+     "hidden": 1,
+     "label": "Title",
+     "no_copy": 1,
+     "print_hide": 1
+    },
+   {
+    "fieldname": "naming_series",
+    "fieldtype": "Select",
+    "label": "Naming Series",
+    "options": "CLE-.YYYY.-"
+   },
+   {
+     "bold": 1,
+     "fieldname": "customer",
+     "fieldtype": "Link",
+     "in_standard_filter": 1,
+     "label": "Customer",
+     "options": "Customer",
+     "print_hide": 1,
+     "search_index": 1
+    },
+    {
+     "bold": 1,
+     "depends_on": "customer",
+     "fetch_from": "customer.customer_name",
+     "fieldname": "customer_name",
+     "fieldtype": "Small Text",
+     "in_global_search": 1,
+     "label": "Customer Name",
+     "read_only": 1
+    },
+   {
+    "default": "Today",
+    "fieldname": "posting_date",
+    "fieldtype": "Date",
+    "in_list_view": 1,
+    "label": "Date",
+    "reqd": 1
+   },
+   {
+    "allow_on_submit": 1,
+    "fieldname": "number",
+    "fieldtype": "Data",
+    "in_list_view": 1,
+    "label": "Number",
+    "reqd": 1
+   },
+   {
+    "allow_on_submit": 1,
+    "default": "Draft",
+    "fieldname": "clearence_status",
+    "fieldtype": "Select",
+    "label": "Clearence status",
+    "no_copy": 1,
+    "options": "\nDraft\nUnpaid\nPaid\nPartially Paid",
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_5s0s5",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fieldname": "company",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "label": "Company",
+    "options": "Company",
+    "reqd": 1
+   },
+   {
+    "fieldname": "sales_invoice",
+    "fieldtype": "Link",
+    "label": "Sales Invoice",
+    "options": "Sales Invoice"
+   },
+   {
+    "fieldname": "description",
+    "fieldtype": "Small Text",
+    "label": "Description"
+   },
+   {
+    "fieldname": "status",
+    "fieldtype": "Select",
+    "label": "Status",
+    "options": "\u062e\u062a\u0627\u0645\u064a\n\u062c\u0627\u0631\u064a"
+   },
+    {
+     "fieldname": "posting_time",
+     "fieldtype": "Time",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Posting Time",
+     "no_copy": 1,
+     "oldfieldname": "posting_time",
+     "oldfieldtype": "Time",
+     "print_hide": 1
+    },
+    {
+     "collapsible": 1,
+     "fieldname": "address_and_contact",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Address and Contact"
+    },
+    {
+     "fieldname": "customer_address",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Customer Address",
+     "options": "Address",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "address_display",
+     "fieldtype": "Small Text",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Address",
+     "read_only": 1
+    },
+    {
+     "fieldname": "contact_person",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "in_global_search": 1,
+     "label": "Contact Person",
+     "options": "Contact",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "contact_display",
+     "fieldtype": "Small Text",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Contact",
+     "read_only": 1
+    },
+    {
+     "fieldname": "contact_mobile",
+     "fieldtype": "Small Text",
+     "hidden": 1,
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Mobile No",
+     "read_only": 1
+    },
+    {
+     "fieldname": "contact_email",
+     "fieldtype": "Data",
+     "hidden": 1,
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Contact Email",
+     "options": "Email",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "territory",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Territory",
+     "options": "Territory",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "col_break4",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1
+    },
+    {
+     "fieldname": "shipping_address_name",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Shipping Address Name",
+     "options": "Address",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "shipping_address",
+     "fieldtype": "Small Text",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Shipping Address",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "company_address",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Company Address Name",
+     "options": "Address",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "company_address_display",
+     "fieldtype": "Small Text",
+     "hidden": 1,
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Company Address",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "collapsible": 1,
+     "depends_on": "customer",
+     "fieldname": "currency_and_price_list",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Currency and Price List"
+    },
+    {
+     "fieldname": "currency",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Currency",
+     "oldfieldname": "currency",
+     "oldfieldtype": "Select",
+     "options": "Currency",
+     "print_hide": 1,
+     "reqd": 1
+    },
+    {
+     "description": "Rate at which Customer Currency is converted to customer's base currency",
+     "fieldname": "conversion_rate",
+     "fieldtype": "Float",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Exchange Rate",
+     "oldfieldname": "conversion_rate",
+     "oldfieldtype": "Currency",
+     "precision": "9",
+     "print_hide": 1,
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break2",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "width": "50%"
+    },
+    {
+     "fieldname": "selling_price_list",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Price List",
+     "oldfieldname": "price_list_name",
+     "oldfieldtype": "Select",
+     "options": "Price List",
+     "print_hide": 1,
+     "reqd": 1
+    },
+    {
+     "fieldname": "price_list_currency",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Price List Currency",
+     "options": "Currency",
+     "print_hide": 1,
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "description": "Rate at which Price list currency is converted to customer's base currency",
+     "fieldname": "plc_conversion_rate",
+     "fieldtype": "Float",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Price List Exchange Rate",
+     "precision": "9",
+     "print_hide": 1,
+     "reqd": 1
+    },
+    {
+     "default": "0",
+     "fieldname": "ignore_pricing_rule",
+     "fieldtype": "Check",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Ignore Pricing Rule",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "section_break_cvmux",
+     "fieldtype": "Section Break"
+    },
+   {
+    "fieldname": "type",
+    "fieldtype": "Select",
+    "in_list_view": 1,
+    "label": "Type",
+    "options": "\u0635\u0627\u062f\u0631\n\u0648\u0627\u0631\u062f",
+    "reqd": 1
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\"",
+    "fieldname": "sales_order",
+    "fieldtype": "Link",
+    "label": "Sales Order",
+    "mandatory_depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\"",
+    "options": "Sales Order"
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\"",
+    "fieldname": "opportunity",
+    "fieldtype": "Link",
+    "label": "Opportunity",
+    "options": "Opportunity"
+   },
+   {
+     "fieldname": "column_break_stmer",
+     "fieldtype": "Column Break"
+    },
+   {
+    "depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\"",
+    "fieldname": "contract_date",
+    "fieldtype": "Date",
+    "label": "Contract Date",
+    "mandatory_depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\""
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\"",
+    "fieldname": "delivery_date",
+    "fieldtype": "Date",
+    "label": "Delivery Date",
+    "mandatory_depends_on": "eval:doc.type==\"\u0635\u0627\u062f\u0631\""
+   },
+   {
+    "fieldname": "column_break_axrmq",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fetch_from": "project.advance_payment_discount",
+    "fieldname": "advance_payment_discount",
+    "fieldtype": "Percent",
+    "label": "Advance Payment Discount",
+    "read_only": 1
+   },
+   {
+    "fetch_from": "project.business_guarantee_insurance_deduction_rate",
+    "fieldname": "business_guarantee_insurance_deduction_rate",
+    "fieldtype": "Percent",
+    "label": "Business guarantee insurance deduction rate",
+    "read_only": 1
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\"",
+    "fieldname": "purchase_order",
+    "fieldtype": "Link",
+    "label": "Purchase Order",
+    "mandatory_depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\"",
+    "options": "Purchase Order"
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\"",
+    "fieldname": "supplier",
+    "fieldtype": "Link",
+    "label": "Supplier",
+    "mandatory_depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\"",
+    "options": "Supplier"
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\"",
+    "fieldname": "purchase_order_date",
+    "fieldtype": "Date",
+    "label": "Purchase Order Date",
+    "mandatory_depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\""
+   },
+   {
+    "depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\"",
+    "fieldname": "receipt_date",
+    "fieldtype": "Date",
+    "label": "Receipt Date",
+    "mandatory_depends_on": "eval:doc.type==\"\u0648\u0627\u0631\u062f\""
+   },
+   {
+    "fieldname": "section_break_em08l",
+    "fieldtype": "Section Break"
+   },
+   {
+    "fieldname": "items",
+    "fieldtype": "Table",
+    "label": "Clearence Items",
+    "options": "Clearence Item"
+   },
+   {
+    "fieldname": "section_break_yzixi",
+    "fieldtype": "Section Break"
+   },
+   {
+     "fieldname": "total_qty",
+     "fieldtype": "Float",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Total Quantity",
+     "read_only": 1
+    },
+    {
+     "fieldname": "base_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Total (Company Currency)",
+     "options": "Company:company:default_currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "base_net_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Net Total (Company Currency)",
+     "oldfieldname": "net_total",
+     "oldfieldtype": "Currency",
+     "options": "Company:company:default_currency",
+     "print_hide": 1,
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break_32",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1
+    },
+    {
+     "fieldname": "total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Total",
+     "options": "currency",
+     "read_only": 1
+    },
+    {
+     "fieldname": "net_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Net Total",
+     "options": "currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "total_net_weight",
+     "fieldtype": "Float",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Total Net Weight",
+     "print_hide": 1,
+     "read_only": 1
+    },
+   {
+    "fieldname": "section_break_ngtuz",
+    "fieldtype": "Section Break"
+   },
+   {
+    "fieldname": "clearence_items_summary",
+    "fieldtype": "Table",
+    "label": "Clearence Items Summary",
+    "options": "Clearence Items Summary",
+    "read_only": 1
+   },
+   {
+     "fieldname": "taxes_section",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "oldfieldtype": "Section Break",
+     "options": "fa fa-money"
+    },
+    {
+     "fieldname": "taxes_and_charges",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Sales Taxes and Charges Template",
+     "oldfieldname": "charge",
+     "oldfieldtype": "Link",
+     "options": "Sales Taxes and Charges Template",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "column_break_38",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1
+    },
+    {
+     "fieldname": "shipping_rule",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Shipping Rule",
+     "oldfieldtype": "Button",
+     "options": "Shipping Rule",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "tax_category",
+     "fieldtype": "Link",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Tax Category",
+     "options": "Tax Category",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "section_break_40",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1
+    },
+    {
+     "fieldname": "taxes",
+     "fieldtype": "Table",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Sales Taxes and Charges",
+     "oldfieldname": "other_charges",
+     "oldfieldtype": "Table",
+     "options": "Sales Taxes and Charges"
+    },
+    {
+     "collapsible": 1,
+     "fieldname": "sec_tax_breakup",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Tax Breakup"
+    },
+    {
+     "fieldname": "other_charges_calculation",
+     "fieldtype": "Long Text",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Taxes and Charges Calculation",
+     "no_copy": 1,
+     "oldfieldtype": "HTML",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "section_break_fwj9j",
+     "fieldtype": "Section Break"
+    },
+   {
+    "fieldname": "deductions",
+    "fieldtype": "Table",
+    "label": "Deduction Table",
+    "options": "Deduction Table"
+   },
+   {
+    "fieldname": "total_deductions",
+    "fieldtype": "Currency",
+    "label": "Total Deductions",
+    "read_only": 1
+   },
+   {
+    "fieldname": "section_break_x3edo",
+    "fieldtype": "Section Break"
+   },
+   {
+    "allow_on_submit": 1,
+    "fieldname": "previous_amount",
+    "fieldtype": "Currency",
+    "label": "Previous Amount",
+    "no_copy": 1,
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_qjdep",
+    "fieldtype": "Column Break"
+   },
+   {
+    "allow_on_submit": 1,
+    "fieldname": "current_amount",
+    "fieldtype": "Currency",
+    "label": "Current Amount",
+    "no_copy": 1,
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_nwujc",
+    "fieldtype": "Column Break"
+   },
+   {
+    "allow_on_submit": 1,
+    "fieldname": "due_amount",
+    "fieldtype": "Currency",
+    "label": "Due Amount",
+    "no_copy": 1,
+    "read_only": 1
+   },
+   {
+     "fieldname": "section_break_43",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1
+    },
+    {
+     "fieldname": "base_total_taxes_and_charges",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Total Taxes and Charges (Company Currency)",
+     "oldfieldname": "other_charges_total",
+     "oldfieldtype": "Currency",
+     "options": "Company:company:default_currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "column_break_47",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1
+    },
+    {
+     "fieldname": "total_taxes_and_charges",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Total Taxes and Charges",
+     "options": "currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "totals",
+     "fieldtype": "Section Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "oldfieldtype": "Section Break",
+     "options": "fa fa-money",
+     "print_hide": 1
+    },
+    {
+     "fieldname": "base_grand_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Grand Total (Company Currency)",
+     "oldfieldname": "grand_total",
+     "oldfieldtype": "Currency",
+     "options": "Company:company:default_currency",
+     "print_hide": 1,
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "depends_on": "eval:!doc.disable_rounded_total",
+     "fieldname": "base_rounding_adjustment",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Rounding Adjustment (Company Currency)",
+     "no_copy": 1,
+     "options": "Company:company:default_currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "depends_on": "eval:!doc.disable_rounded_total",
+     "fieldname": "base_rounded_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Rounded Total (Company Currency)",
+     "oldfieldname": "rounded_total",
+     "oldfieldtype": "Currency",
+     "options": "Company:company:default_currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "description": "In Words will be visible once you save the Sales Invoice.",
+     "fieldname": "base_in_words",
+     "fieldtype": "Small Text",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "In Words (Company Currency)",
+     "length": 240,
+     "oldfieldname": "in_words",
+     "oldfieldtype": "Data",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "column_break5",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "oldfieldtype": "Column Break",
+     "print_hide": 1
+    },
+    {
+     "bold": 1,
+     "fieldname": "grand_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "in_list_view": 1,
+     "label": "Grand Total",
+     "oldfieldname": "grand_total_export",
+     "oldfieldtype": "Currency",
+     "options": "currency",
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "depends_on": "eval:!doc.disable_rounded_total",
+     "fieldname": "rounding_adjustment",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Rounding Adjustment",
+     "no_copy": 1,
+     "options": "currency",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "bold": 1,
+     "depends_on": "eval:!doc.disable_rounded_total",
+     "fieldname": "rounded_total",
+     "fieldtype": "Currency",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "Rounded Total",
+     "oldfieldname": "rounded_total_export",
+     "oldfieldtype": "Currency",
+     "options": "currency",
+     "read_only": 1
+    },
+    {
+     "fieldname": "in_words",
+     "fieldtype": "Small Text",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "label": "In Words",
+     "length": 240,
+     "oldfieldname": "in_words_export",
+     "oldfieldtype": "Data",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+      "fieldname": "advance_payments",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "base_advance_payment_discount_rate",
+      "fieldtype": "Currency",
+      "label": "The value of the advance payment discount rate",
+      "options": "Company:company:default_currency",
+      "print_hide": 1,
+      "read_only": 1
+     },
+     {
+      "fieldname": "base_business_insurance_discount_rate_value",
+      "fieldtype": "Currency",
+      "label": "Business insurance discount rate value (Compnay Currency)",
+      "options": "Company:company:default_currency",
+      "print_hide": 1,
+      "read_only": 1
+     },
+    {
+     "fieldname": "column_break_0t5vc",
+     "fieldtype": "Column Break",
+     "hide_days": 1,
+     "hide_seconds": 1,
+     "oldfieldtype": "Column Break",
+     "print_hide": 1
+    },
+   {
+    "fieldname": "advance_payment_discount_rate",
+    "fieldtype": "Currency",
+    "label": "The value of the advance payment discount rate",
+    "read_only": 1
+   },
+   {
+    "fieldname": "business_insurance_discount_rate_value",
+    "fieldtype": "Currency",
+    "label": "Business insurance discount rate value",
+    "read_only": 1
+   },
+   {
+    "fieldname": "total_after_deductions",
+    "fieldtype": "Currency",
+    "label": "Total After Deductions",
+    "options": "currency",
+    "read_only": 1
+   },
+   {
+    "allow_on_submit": 1,
+    "fieldname": "paid_amount",
+    "fieldtype": "Currency",
+    "label": "Paid Amount",
+    "no_copy": 1,
+    "read_only": 1
+   },
+   {
+    "allow_on_submit": 1,
+    "fieldname": "paid_percentage",
+    "fieldtype": "Percent",
+    "label": "Paid Percentage",
+    "no_copy": 1,
+    "read_only": 1
+   },
+   {
+    "fieldname": "amended_from",
+    "fieldtype": "Link",
+    "label": "Amended From",
+    "no_copy": 1,
+    "options": "Clearence",
+    "print_hide": 1,
+    "read_only": 1,
+    "search_index": 1
+   }
+  ],
+  "hide_toolbar": 1,
+  "index_web_pages_for_search": 1,
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2024-04-05 05:36:57.497648",
+  "modified_by": "Administrator",
+  "module": "Contractor App",
+  "name": "Clearence",
+  "naming_rule": "By \"Naming Series\" field",
+  "owner": "Administrator",
+  "permissions": [
+   {
+    "create": 1,
+    "delete": 1,
+    "email": 1,
+    "export": 1,
+    "print": 1,
+    "read": 1,
+    "report": 1,
+    "role": "System Manager",
+    "share": 1,
+    "write": 1
+   }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": []
+ }
