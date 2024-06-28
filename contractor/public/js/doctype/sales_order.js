@@ -12,6 +12,11 @@ contractor.selling.CustomSalesOrderController = class CustomSalesOrderController
         if(flt(doc.per_delivered, 2) < 100) {
             this.frm.add_custom_button(__('Project'), () => this.make_project(), __('Create'));
         }
+        if (this.frm.doc.docstatus == 1){
+            me.frm.add_custom_button(__("Clearence"), () => {
+                this.create_clearence();
+            }, __('Create'))
+        }
     }
     make_project() {
 		frappe.model.open_mapped_doc({
@@ -19,6 +24,12 @@ contractor.selling.CustomSalesOrderController = class CustomSalesOrderController
 			frm: this.frm
 		})
 	}
+    create_clearence(){
+        frappe.model.open_mapped_doc({
+			method: "contractor.www.api.create_clearence",
+			frm: this.frm
+		})
+    }
 }
 
 extend_cscript(cur_frm.cscript, new contractor.selling.CustomSalesOrderController({frm: cur_frm}));
