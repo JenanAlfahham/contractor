@@ -6,17 +6,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "item_group",
+  "group_item",
   "rate",
   "base_rate"
  ],
  "fields": [
   {
-   "fieldname": "item_group",
+   "fieldname": "group_item",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Item Group",
-   "options": "Item Group",
+   "label": "Group Item",
+   "options": "Item",
    "read_only": 1,
    "reqd": 1
   },
