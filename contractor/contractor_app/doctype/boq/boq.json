@@ -9,9 +9,10 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "item_group",
+  "group_item",
   "unit",
-  "owners",
+  "party_type",
+  "party_name",
   "start_date",
   "expected_time_period",
   "column_break_puvaq",
@@ -50,11 +51,11 @@
    "reqd": 1
   },
   {
-   "fieldname": "item_group",
+   "fieldname": "group_item",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Item Group",
-   "options": "Item Group",
+   "label": "Item",
+   "options": "Item",
    "reqd": 1
   },
   {
@@ -64,11 +65,25 @@
    "options": "UOM"
   },
   {
-   "fieldname": "owners",
-   "fieldtype": "Link",
-   "label": "Owner",
-   "options": "Customer"
-  },
+    "fieldname": "party_type",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "in_standard_filter": 1,
+    "label": "Party Type",
+    "options": "DocType",
+    "print_hide": 1,
+    "reqd": 1
+   },
+   {
+    "bold": 1,
+    "fieldname": "party_name",
+    "fieldtype": "Dynamic Link",
+    "in_standard_filter": 1,
+    "label": "Party",
+    "options": "party_type",
+    "print_hide": 1,
+    "reqd": 1
+   },
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
