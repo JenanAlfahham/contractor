@@ -16,7 +16,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Contracting item Group",
-   "options": "Item Group",
+   "options": "Item",
    "reqd": 1
   },
   {
