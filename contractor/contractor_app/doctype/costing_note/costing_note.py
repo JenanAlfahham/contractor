@@ -18,10 +18,10 @@ class CostingNote(Document):
 			if not row.is_group and row.series_number:
 				group = int(row.series_number.split('_')[0])
 
-				if not rates.get((row.item_group, group)): 
-					rates[(row.item_group, group)] = 0
+				if not rates.get((row.group_item, group)): 
+					rates[(row.group_item, group)] = 0
 
-				rates[(row.item_group, group)] += row.target_selling_price
+				rates[(row.group_item, group)] += row.target_selling_price
 			
 			row.total_cost = row.get("cost", 0) * row.qty
 			row.target_selling_price = row.get("total_cost", 0) + (row.get("total_cost", 0) * row.get("default_profit_margin", 0) / 100)
@@ -35,10 +35,10 @@ class CostingNote(Document):
 		self.profit_margin = self.total_profit / self.total_cost * 100 if self.total_cost else 0
 
 		self.group_items = []
-		for item_group, group in rates:
+		for group_item, group in rates:
 			new_item = frappe._dict({
-				"item_group": item_group,
-				"rate": rates[(item_group, group)]
+				"group_item": group_item,
+				"rate": rates[(group_item, group)]
 			})
 			self.append("group_items", new_item)
 
@@ -50,7 +50,7 @@ class CostingNote(Document):
 				for item in opp.items:
 					if item.item_code == row.item and\
 					 item.series_number == row.series_number and\
-					 item.item_group == row.item_group:
+					 item.group_item == row.group_item:
 
 						item.rate = row.target_selling_price / row.qty
 						item.amount = row.target_selling_price
