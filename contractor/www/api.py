@@ -16,20 +16,20 @@ def set_series_number(doc):
 
     latest_group = 0
     latest_sub = 0
-    item_group = None
+    group_item = None
     for item in doc.items:
         if item.is_group:
             latest_group += 1 
             item.series_number = latest_group
             latest_sub = 0
-            item_group = item.item_group
+            group_item = item.item_code
 
         else:
             if latest_group == 0: continue
             latest_sub += 1
             item.series_number = str(latest_group) + "_" + str(latest_sub)
 
-        item.item_group = item_group
+        item.group_item = group_item
 
 def set_rate_of_group_items(doc):
     """
@@ -41,19 +41,19 @@ def set_rate_of_group_items(doc):
         if not item.is_group and item.series_number:
             group = int(item.series_number.split('_')[0])
 
-            if not rates.get((item.item_group, group)): 
-                rates[(item.item_group, group)] = 0
+            if not rates.get((item.group_item, group)): 
+                rates[(item.group_item, group)] = 0
 
-            rates[(item.item_group, group)] += item.amount
+            rates[(item.group_item, group)] += item.amount
         elif item.series_number: 
             item.rate = item.base_rate = item.amount = item.base_amount = 0
 
     doc.group_items = []
-    for item_group, group in rates:
+    for group_item, group in rates:
         new_item = frappe._dict({
-            "item_group": item_group,
-            "rate": rates[(item_group, group)],
-            "base_rate": rates[(item_group, group)] * doc.conversion_rate if doc.doctype == "Opportunity" else rates[(item_group, group)]
+            "group_item": group_item,
+            "rate": rates[(group_item, group)],
+            "base_rate": rates[(group_item, group)] * doc.conversion_rate if doc.doctype == "Opportunity" else rates[(group_item, group)]
         })
         doc.append("group_items", new_item)
 
@@ -96,7 +96,7 @@ def create_costing_note(source_name, target_doc=None):
         {
             "Opportunity": {
                 "doctype": "Costing Note",
-                "field_map": {"name": "opportunity", "party_name": "customer"},
+                "field_map": {"name": "opportunity", "opportunity_from": "party_type"},
             },
             "Opportunity Item": {
                 "doctype": "Costing Note Items",
@@ -118,7 +118,7 @@ def create_boq(source_name, target_doc=None):
     item = frappe._dict(item)
     def set_missing_values(source, target):
         target.naming_series = "BOQ-.YYYY.-"
-        target.item_group = item.item_group
+        target.group_item = item.group_item
         target.item = item.item
         target.unit = item.uom
         target.project_qty = item.qty
@@ -131,7 +131,6 @@ def create_boq(source_name, target_doc=None):
         {
             "Costing Note": {
                 "doctype": "BOQ",
-                "field_map": {"customer": "owners"},
             },
         },
         target_doc,
