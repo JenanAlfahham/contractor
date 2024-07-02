@@ -13,7 +13,8 @@
   "opportunity",
   "column_break_u5cmu",
   "date",
-  "customer",
+  "party_type",
+  "party_name",
   "tender_number",
   "section_break_lae0y",
   "costing_note_items",
@@ -37,6 +38,26 @@
    "options": "COS-Note-.YYYY.-"
   },
   {
+    "fieldname": "party_type",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "in_standard_filter": 1,
+    "label": "Party Type",
+    "options": "DocType",
+    "print_hide": 1,
+    "reqd": 1
+   },
+   {
+    "bold": 1,
+    "fieldname": "party_name",
+    "fieldtype": "Dynamic Link",
+    "in_standard_filter": 1,
+    "label": "Party",
+    "options": "party_type",
+    "print_hide": 1,
+    "reqd": 1
+   },
+  {
    "fieldname": "project",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -59,13 +80,6 @@
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "label": "Customer",
-   "options": "Customer",
    "reqd": 1
   },
   {
