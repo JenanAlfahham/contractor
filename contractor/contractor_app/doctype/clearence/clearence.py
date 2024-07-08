@@ -7,7 +7,13 @@ import datetime
 import frappe
 from frappe.model.document import Document
 from frappe.utils import flt, cint, nowdate, round_based_on_smallest_currency_fraction
+from frappe.utils import today  
+from frappe.model.mapper import get_mapped_doc
+from frappe.contacts.doctype.address.address import get_company_address
 
+from erpnext.stock.doctype.item.item import get_item_defaults
+from erpnext.accounts.party import get_party_account
+from erpnext.setup.doctype.item_group.item_group import get_item_group_defaults
 from erpnext.accounts.doctype.pricing_rule.utils import get_applied_pricing_rules
 from erpnext.controllers.accounts_controller import (
 	validate_inclusive_tax,
@@ -33,6 +39,9 @@ class Clearence(Document):
 
 	def validate(self):
 		frappe.flags.round_off_applicable_accounts = []
+		if not self.project:
+			self.project = frappe.db.get_value("Sales Order", clearence.project, "project")
+
 		get_round_off_applicable_accounts(frappe.flags.round_off_applicable_accounts)
 		self._calculate()
 		self.calculate_project_discount_rates()
@@ -415,11 +424,109 @@ class Clearence(Document):
 def get_round_off_applicable_accounts(account_list):
 
 	return 
+
+
+def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
+	def postprocess(source, target):
+		set_missing_values(source, target)
+		# Get the advance paid Journal Entries in Sales Invoice Advance
+		if target.get("allocate_advances_automatically"):
+			target.set_advances()
+
+	def set_missing_values(source, target):
+		target.update_stock = 1
+		target.disable_rounded_total = 1
+		target.flags.ignore_permissions = True
+		target.run_method("set_missing_values")
+		target.run_method("set_po_nos")
+		target.run_method("calculate_taxes_and_totals")
+
+		if source.company_address:
+			target.update({"company_address": source.company_address})
+		else:
+			# set company address
+			target.update(get_company_address(target.company))
+
+		if target.company_address:
+			target.update(get_fetch_values("Sales Invoice", "company_address", target.company_address))
+
+		# set the redeem loyalty points if provided via shopping cart
+		if source.loyalty_points and source.order_type == "Shopping Cart":
+			target.redeem_loyalty_points = 1
+
+		target.debit_to = get_party_account("Customer", source.customer, source.company)
+
+	def update_item(source, target, source_parent):
+		target.amount = flt(source.amount) - flt(source.billed_amt)
+		target.base_amount = target.amount * flt(source_parent.conversion_rate)
+		target.qty = (
+			target.amount / flt(source.rate)
+			if (source.rate and source.billed_amt)
+			else source.qty - source.returned_qty
+		)
+
+		if source_parent.project:
+			target.cost_center = frappe.db.get_value("Project", source_parent.project, "cost_center")
+		if target.item_code:
+			item = get_item_defaults(target.item_code, source_parent.company)
+			item_group = get_item_group_defaults(target.item_code, source_parent.company)
+			cost_center = item.get("selling_cost_center") or item_group.get("selling_cost_center")
+
+			if cost_center:
+				target.cost_center = cost_center
+
+	doclist = get_mapped_doc(
+		"Sales Order",
+		source_name,
+		{
+			"Sales Order": {
+				"doctype": "Sales Invoice",
+				"field_map": {
+					"party_account_currency": "party_account_currency",
+					"payment_terms_template": "payment_terms_template",
+				},
+				"field_no_map": ["payment_terms_template"],
+				"validation": {"docstatus": ["=", 1]},
+			},
+			"Sales Order Item": {
+				"doctype": "Sales Invoice Item",
+				"field_map": {
+					"name": "so_detail",
+					"parent": "sales_order",
+				},
+				"postprocess": update_item,
+				"condition": lambda doc: doc.qty
+				and (doc.base_amount == 0 or abs(doc.billed_amt) < abs(doc.amount)),
+			},
+			"Sales Taxes and Charges": {"doctype": "Sales Taxes and Charges", "add_if_empty": True},
+			"Sales Team": {"doctype": "Sales Team", "add_if_empty": True},
+		},
+		target_doc,
+		postprocess,
+		ignore_permissions=ignore_permissions,
+	)
+
+	automatically_fetch_payment_terms = cint(
+		frappe.db.get_single_value("Accounts Settings", "automatically_fetch_payment_terms")
+	)
+	if automatically_fetch_payment_terms:
+		doclist.set_payment_schedule()
+
+	doclist.set_onload("ignore_price_list", True)
+	
+	return doclist
 	
 def create_a_payment(clearence):
 
 	if clearence.conversion_rate != 1:
 		return
+
+	if not clearence.sales_order: return
+
+	si = make_sales_invoice(clearence.sales_order)
+	si.submit()
+
+	clearence.sales_invoice = si.name
 
 	je = frappe.new_doc("Journal Entry")
 	je.posting_date = nowdate()
@@ -427,7 +534,7 @@ def create_a_payment(clearence):
 
 	debtors, default_business_guarantee_insurance_account, advance_payment_discount_account, default_income_account = frappe.db.get_value("Company", clearence.company, ["default_receivable_account", "default_business_guarantee_insurance_account", "advance_payment_discount_account", "default_income_account"])
 
-	if not debtors or not default_business_guarantee_insurance_account or not advance_payment_discount_account:
+	if not debtors:
 		return
 
 	accounts.append(frappe._dict(
@@ -436,24 +543,32 @@ def create_a_payment(clearence):
 		"party_type": "Customer",
 		"party": clearence.customer,
 		"credit_in_account_currency": clearence.base_grand_total,
-		"reference_type": "Sales Order",
-		"reference_name": clearence.sales_order
+		"reference_type": "Sales Invoice",
+		"reference_name": si.name
 		}
 	))
 	if clearence.base_business_insurance_discount_rate_value:
+		if not default_business_guarantee_insurance_account:
+			frappe.throw("You need to set a Default Business Guarantee Insurance Account for the Company {}".format(clearence.company))
+		
 		accounts.append(frappe._dict(
 			{
 			"account": default_business_guarantee_insurance_account,
 			"debit_in_account_currency": clearence.base_business_insurance_discount_rate_value,
 			}
 		))
+
 	if clearence.base_advance_payment_discount_rate:
+		if not default_business_guarantee_insurance_account:
+			frappe.throw("You need to set a Advance Payment Discount Account for the Company {}".format(clearence.company))
+		
 		accounts.append(frappe._dict(
 			{
 			"account": advance_payment_discount_account,
 			"debit_in_account_currency": clearence.base_advance_payment_discount_rate,
 			}
 		))
+
 	accounts.append(frappe._dict(
 		{
 		"account": default_income_account,
@@ -466,7 +581,11 @@ def create_a_payment(clearence):
 	
 	frappe.msgprint(f"A Journal Entry is created. Check it from here: <br><b><a href='/app/journal-entry/{je.name}'>{je.name}</a></b>")
 
+	if not clearence.project: return
 
+	project = frappe.get_doc("Project", clearence.project)
+
+	project.save(ignore_permissions=True)
 
 
 
