@@ -8,7 +8,10 @@
  "field_order": [
   "group_item",
   "rate",
-  "base_rate"
+  "base_rate",
+  "completion_percentage",
+  "qty",
+  "completed_qty"
  ],
  "fields": [
   {
@@ -33,7 +36,25 @@
    "label": "Rate (Company Currency)",
    "options": "Company:company:default_currency",
    "read_only": 1
-  }
+  },
+  {
+    "fieldname": "completion_percentage",
+    "fieldtype": "Percent",
+    "in_list_view": 1,
+    "label": "Completion Percentage"
+   },
+   {
+    "fieldname": "qty",
+    "fieldtype": "Float",
+    "label": "QTY",
+    "read_only": 1
+   },
+   {
+    "fieldname": "completed_qty",
+    "fieldtype": "Float",
+    "label": "Completed Qty",
+    "read_only": 1
+   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
