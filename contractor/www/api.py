@@ -1,11 +1,13 @@
 import frappe
-from frappe.utils import today  
+from frappe.utils import today, flt
 from frappe.model.mapper import get_mapped_doc
 
 # Custom Validation for Opportunity & Project
 def validate(doc, method=None):
     set_series_number(doc)
     set_rate_of_group_items(doc)
+    if doc.doctype == "Project":
+        set_qtys(doc)
 
 def set_series_number(doc):
     """
@@ -42,9 +44,11 @@ def set_rate_of_group_items(doc):
             group = int(item.series_number.split('_')[0])
 
             if not rates.get((item.group_item, group)): 
-                rates[(item.group_item, group)] = 0
+                rates[(item.group_item, group)] = [0, 0]
 
-            rates[(item.group_item, group)] += item.amount
+            rates[(item.group_item, group)][0] += flt(item.amount)
+            rates[(item.group_item, group)][1] += flt(item.qty)
+        
         elif item.series_number: 
             item.rate = item.base_rate = item.amount = item.base_amount = 0
 
@@ -52,10 +56,32 @@ def set_rate_of_group_items(doc):
     for group_item, group in rates:
         new_item = frappe._dict({
             "group_item": group_item,
-            "rate": rates[(group_item, group)],
-            "base_rate": rates[(group_item, group)] * doc.conversion_rate if doc.doctype == "Opportunity" else rates[(group_item, group)]
+            "rate": rates[(group_item, group)][0],
+            "base_rate": rates[(group_item, group)][0] * doc.conversion_rate if doc.doctype == "Opportunity" else rates[(group_item, group)][0],
+            "qty": rates[(group_item, group)][1],
+            "completed_qty": 0,
+            "completion_percentage": 0
         })
         doc.append("group_items", new_item)
+
+def set_qtys(doc):
+    cleas = frappe.db.get_all("Clearence", {"project": doc.name, "docstatus": 1}, "name")
+    groups = {}
+    for clea in cleas:
+        d = frappe.get_doc("Clearence", clea.name)
+        for item in d.items:
+            if item.is_group: continue
+
+            if not groups.get(item.group_item):
+                groups[item.group_item] = 0
+
+            groups[item.group_item] += item.qty
+
+    for parent in doc.group_items:
+        if groups.get(parent.group_item):
+            parent.completed_qty = groups[parent.group_item]
+            parent.completion_percentage = parent.completed_qty / parent.qty * 100
+
 
 
 @frappe.whitelist()
@@ -75,6 +101,8 @@ def make_project(source_name, target_doc=None):
 					"name": "sales_order",
 					"base_grand_total": "estimated_costing",
 					"net_total": "total_sales_amount",
+                    "grand_total": "project_amount",
+                    "base_grand_total": "base_project_amount"
 				},
 			},
             "Sales Order Item": {
@@ -146,7 +174,8 @@ def create_clearence(source_name, target_doc=None):
             project = frappe.get_doc("Project", source.project)
             target.advance_payment_discount = project.advance_payment_discount
             target.business_guarantee_insurance_deduction_rate = project.business_guarantee_insurance_deduction_rate
-        
+            target.contract_date = project.date
+
         for item in source.items:
             if item.prevdoc_docname:
                 if frappe.db.exists("Quotation", item.prevdoc_docname):
