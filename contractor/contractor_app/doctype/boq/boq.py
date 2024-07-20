@@ -38,3 +38,16 @@ class BOQ(Document):
 				break
 
 		doc.save(ignore_permissions = True)
+
+	def on_cancel(self):
+		doc = frappe.get_doc("Costing Note", self.costing_note)
+		for row in doc.costing_note_items:
+			if row.name == self.line_id:
+				row.cost = 0
+				row.total_cost = 0
+				row.target_selling_price = 0
+				row.boq_link = None
+
+				break
+
+		doc.save(ignore_permissions = True)
