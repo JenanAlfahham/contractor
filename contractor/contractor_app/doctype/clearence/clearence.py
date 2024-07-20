@@ -37,6 +37,37 @@ class Clearence(Document):
 	def on_submit(self):
 		create_a_payment(self)
 
+	def on_cancel(self):
+		self.cancel_payment()
+
+	def cancel_payment(self):
+		"Cancel\Delete the Linked Invoice & Cancel\Delete the Linked Journal Entry"
+		
+		if not self.sales_invoice: return
+
+		si = frappe.get_doc("Sales Invoice", self.sales_invoice)
+
+		if si.docstatus == 0: 
+			self.sales_invoice = None
+			si.delete()
+
+		else:
+			if frappe.db.exists("Journal Entry Account", {"reference_name": si.name, "docstatus": ("!=", 2)}):
+				je_name = frappe.db.get_value("Journal Entry Account", {"reference_name": si.name, "docstatus": ("!=", 2)}, "parent")
+				je = frappe.get_doc("Journal Entry", je_name)
+				if je.docstatus == 0:
+					je.delete()
+
+				else: je.cancel()
+
+			si.cancel()
+
+		if not self.project: return
+
+		project = frappe.get_doc("Project", self.project)
+
+		project.save(ignore_permissions=True)
+
 	def validate(self):
 		frappe.flags.round_off_applicable_accounts = []
 		if not self.project:
@@ -526,7 +557,7 @@ def create_a_payment(clearence):
 	si = make_sales_invoice(clearence.sales_order)
 	si.submit()
 
-	clearence.sales_invoice = si.name
+	frappe.db.set_value("Clearence", clearence.name, "sales_invoice", si.name)
 
 	je = frappe.new_doc("Journal Entry")
 	je.posting_date = nowdate()
