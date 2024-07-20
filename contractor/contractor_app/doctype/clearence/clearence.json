@@ -198,7 +198,8 @@
     "fieldname": "sales_invoice",
     "fieldtype": "Link",
     "label": "Sales Invoice",
-    "options": "Sales Invoice"
+    "options": "Sales Invoice",
+    "allow_on_submit": 1
    },
    {
     "fieldname": "description",
