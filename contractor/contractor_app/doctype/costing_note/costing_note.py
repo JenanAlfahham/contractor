@@ -11,6 +11,17 @@ class CostingNote(Document):
 	def on_submit(self):
 		self.update_opportunity()
 
+	def on_cancel(self):
+		doc = frappe.get_doc("Opprtunity", self.opportunity)
+		for row in self.costing_note_items:
+			for item in doc.items:
+				if item.item_code == row.item and item.group_item == row.group_item:
+					if item.rate <= row.target_selling_price:
+						item.rate -= row.target_selling_price
+					else: item.rate = 0
+					break
+		doc.save(ignore_permissions=True)
+
 	def update_prices_and_costs(self):
 		rates = {}
 		total_cost, total_amount, total_profit = 0, 0, 0
