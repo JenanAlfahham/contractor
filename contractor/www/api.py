@@ -2,6 +2,8 @@ import frappe
 from frappe.utils import today, flt
 from frappe.model.mapper import get_mapped_doc
 
+from contractor.contractor_app.doctype.boq.boq import set_boq_template
+
 # Custom Validation for Opportunity & Project
 def validate(doc, method=None):
     set_series_number(doc)
@@ -22,14 +24,16 @@ def set_series_number(doc):
     for item in doc.items:
         if item.is_group:
             latest_group += 1 
-            item.series_number = latest_group
+            if not item.series_number: item.series_number = latest_group
             latest_sub = 0
-            group_item = item.item_code
+            if item.group_item: 
+                group_item = item.group_item
+            else: group_item = item.item_code
 
         else:
             if latest_group == 0: continue
             latest_sub += 1
-            item.series_number = str(latest_group) + "_" + str(latest_sub)
+            if not item.series_number: item.series_number = str(latest_group) + "_" + str(latest_sub)
 
         item.group_item = group_item
 
@@ -129,7 +133,7 @@ def create_costing_note(source_name, target_doc=None):
             "Opportunity Item": {
                 "doctype": "Costing Note Items",
                 "field_map": {"item_code": "item", "amount": "target_selling_price"},
-                "condition": lambda doc: not doc.is_group,
+                #"condition": lambda doc: not doc.is_group,
             },
             "Group Item": {
                 "doctype": "Group Item"
@@ -164,6 +168,12 @@ def create_boq(source_name, target_doc=None):
         target_doc,
         set_missing_values,
     )
+    
+    tables = set_boq_template(doc.item)
+
+    for table in tables:
+        doc.update({table: tables[table]})
+
     return doc
 
 @frappe.whitelist()
