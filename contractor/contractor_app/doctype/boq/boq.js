@@ -14,6 +14,44 @@ frappe.ui.form.on('BOQ', {
 	onload: function(frm){
 		frm.trigger('setup_queries');
 	},
+	item: function(frm){
+		if (frm.doc.item){
+			frappe.call({
+				"method": "contractor.contractor_app.doctype.boq.boq.set_boq_template",
+				"args": {
+					"item_code": frm.doc.item,
+					"doc": frm.doc
+				},
+				callback: function(r){
+					if (r.message) {
+						frm.clear_table("material_costs");
+						frm.clear_table("labor_costs");
+						frm.clear_table("contractors_table");
+						frm.clear_table("expenses_table");
+						let keys = Object.keys(r.message);
+
+						for (const table of keys){
+							for (const row of r.message[table]){
+								let c = frm.add_child(table);
+								c.cost = row.cost;
+								c.item = row.item;
+								c.qty = row.qty;
+								c.total_cost = row.total_cost;
+
+								if (table == "material_costs") c.depreciasion_percentage = row.depreciasion_percentage;
+
+								else c.uom = row.uom
+							}
+							
+							frm.refresh_field(table)
+
+						}
+
+					}
+				}
+			})
+		}
+	},
 	party_type: function(frm) {
 		frm.trigger('setup_party_type');
 

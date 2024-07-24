@@ -51,3 +51,33 @@ class BOQ(Document):
 				break
 
 		doc.save(ignore_permissions = True)
+
+
+@frappe.whitelist()
+def set_boq_template(item_code):
+
+	if not frappe.db.exists("Template BOQ", item_code): return
+
+	tables = {}
+
+	temp = frappe.get_doc("Template BOQ", item_code)
+
+	for table in ["material_costs", "labor_costs", "contractors_table", "expenses_table"]:
+		if temp.get(table):
+			
+			tables[table] = []
+
+			for row in temp.get(table):
+				item = frappe._dict({
+					"cost": row.get("cost", 0),
+					"qty": row.get("qty", 0), 
+					"item": row.item,
+					"total_cost": row.get("total_cost", 0)
+				})
+				if table == "material_costs": item["depreciasion_percentage"] = row.get("depreciasion_percentage")
+				else: item["uom"] = row.uom
+
+				tables[table].append(item)
+
+	return tables
+
