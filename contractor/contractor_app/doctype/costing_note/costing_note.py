@@ -58,11 +58,18 @@ class CostingNote(Document):
 			opp = frappe.get_doc("Opportunity", self.opportunity)
 
 			for row in self.costing_note_items:
+				if row.item == "Unknown" or row.item == "Unknown Group":
+					frappe.throw("Row {}: No Correct Item Code is Set".format(row.idx))
+
 				for item in opp.items:
-					if item.item_code == row.item and\
+					if item.item_description == row.item_description and\
 					 item.series_number == row.series_number and\
 					 item.group_item == row.group_item:
-
+						item.item_code = row.item
+						item.item_group = row.item_group
+						item.uom = row.uom
+						item.item_name = frappe.db.get_value("Item", row.item, "item_name")
+						item.description = frappe.db.get_value("Item", row.item, "description")
 						item.rate = row.target_selling_price / row.qty
 						item.amount = row.target_selling_price
 						break
