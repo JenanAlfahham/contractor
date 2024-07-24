@@ -11,6 +11,7 @@
   "series_number",
   "group_item",
   "item",
+  "item_description",
   "item_group",
   "uom",
   "qty",
@@ -47,15 +48,13 @@
    "reqd": 1
   },
   {
-    "fieldname": "group_item",
-    "fieldtype": "Link",
-    "in_list_view": 1,
-    "label": "Group Item",
-    "options": "Item",
-    "read_only": 1,
-    "reqd": 1,
-    "columns": 1
-   },
+  "fieldname": "group_item",
+  "fieldtype": "Data",
+  "in_list_view": 1,
+  "label": "Group Item",
+  "reqd": 1,
+  "columns": 1
+  },
   {
    "columns": 1,
    "fieldname": "item",
@@ -65,10 +64,15 @@
    "options": "Item"
   },
   {
-   "columns": 1,
+  "columns": 1,
+  "fieldname": "item_description",
+  "fieldtype": "Data",
+  "in_list_view": 1,
+  "label": "Item Description"
+  },
+  {
    "fieldname": "uom",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "UOM",
    "options": "UOM"
   },
@@ -80,23 +84,23 @@
    "label": "QTY"
   },
   {
-    "columns": 1,
-    "fieldname": "boq",
-    "fieldtype": "Button",
-    "in_list_view": 1,
-    "label": "BOQ"
+  "columns": 1,
+  "fieldname": "boq",
+  "fieldtype": "Button",
+  "in_list_view": 1,
+  "label": "BOQ"
    },
    {
-    "fieldname": "boq_link",
-    "fieldtype": "Link",
-    "label": "BOQ Link",
-    "options": "BOQ"
+  "fieldname": "boq_link",
+  "fieldtype": "Link",
+  "label": "BOQ Link",
+  "options": "BOQ"
    },
   {
-    "columns": 1,
-    "fieldname": "cost",
-    "fieldtype": "Currency",
-    "label": "Cost"
+  "columns": 1,
+  "fieldname": "cost",
+  "fieldtype": "Currency",
+  "label": "Cost"
    },
   {
    "columns": 1,
