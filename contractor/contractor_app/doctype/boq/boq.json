@@ -52,10 +52,9 @@
   },
   {
    "fieldname": "group_item",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Item",
-   "options": "Item",
    "reqd": 1
   },
   {

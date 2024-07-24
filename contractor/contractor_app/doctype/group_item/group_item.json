@@ -16,11 +16,9 @@
  "fields": [
   {
    "fieldname": "group_item",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Group Item",
-   "options": "Item",
-   "read_only": 1,
    "reqd": 1
   },
   {
