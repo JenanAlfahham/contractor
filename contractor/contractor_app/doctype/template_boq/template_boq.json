@@ -1,0 +1,96 @@
+{
+ "actions": [],
+ "autoname": "field:item_code",
+ "creation": "2024-07-24 21:56:09.698931",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "section_break_afdcv",
+  "material_costs",
+  "section_break_ovpxe",
+  "labor_costs",
+  "section_break_rsoe5",
+  "contractors_table",
+  "section_break_3ectj",
+  "expenses_table"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "section_break_afdcv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "material_costs",
+   "fieldtype": "Table",
+   "label": "Material Costs",
+   "options": "Material costs"
+  },
+  {
+   "fieldname": "section_break_ovpxe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "labor_costs",
+   "fieldtype": "Table",
+   "label": "Labor costs",
+   "options": "Labor costs"
+  },
+  {
+   "fieldname": "section_break_rsoe5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "contractors_table",
+   "fieldtype": "Table",
+   "label": "Contractors table",
+   "options": "Contractors table"
+  },
+  {
+   "fieldname": "section_break_3ectj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "expenses_table",
+   "fieldtype": "Table",
+   "label": "Expenses Table",
+   "options": "Expenses Table"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-24 21:56:13.900183",
+ "modified_by": "Administrator",
+ "module": "Contractor App",
+ "name": "Template BOQ",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
