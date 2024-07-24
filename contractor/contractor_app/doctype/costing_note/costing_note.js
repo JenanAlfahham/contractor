@@ -49,6 +49,9 @@ frappe.ui.form.on('Costing Note', {
 frappe.ui.form.on('Costing Note Items', {
 	boq: function(frm, cdt, cdn){
 		let row = locals[cdt][cdn];
+		if (row.item == "Unknown" || row.item == "Unknown Group"){
+			frappe.throw("You haven't set a correct Item Code for this Item yet");
+		}
 		frappe.model.open_mapped_doc({
 			method: "contractor.www.api.create_boq",
 			frm: frm,
