@@ -32,6 +32,7 @@ class BOQ(Document):
 		doc = frappe.get_doc("Costing Note", self.costing_note)
 		for row in doc.costing_note_items:
 			if row.name == self.line_id:
+				row.item = self.item
 				row.cost = self.total_cost / self.project_qty
 				row.total_cost = self.total_cost
 				row.boq_link = self.name
