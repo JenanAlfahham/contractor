@@ -9,7 +9,6 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "group_item",
   "unit",
   "party_type",
   "party_name",
@@ -19,6 +18,7 @@
   "item",
   "project_qty",
   "project",
+  "boq_template",
   "end_date",
   "section_break_6qymy",
   "material_costs",
@@ -48,13 +48,6 @@
    "in_list_view": 1,
    "label": "Naming Series",
    "options": "BOQ-.YYYY.-",
-   "reqd": 1
-  },
-  {
-   "fieldname": "group_item",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item",
    "reqd": 1
   },
   {
@@ -113,6 +106,12 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "Project"
+  },
+  {
+   "fieldname": "boq_template",
+   "fieldtype": "Link",
+   "label": "BOQ Template",
+   "options": "Template BOQ"
   },
   {
    "fieldname": "end_date",
