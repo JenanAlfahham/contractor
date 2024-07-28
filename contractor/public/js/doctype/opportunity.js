@@ -1,5 +1,6 @@
 frappe.ui.form.on("Opportunity", {
     refresh: function(frm){
+        frm.set_df_property("items", "allow_bulk_edit", 1);
         frm.set_query("item_code", "items", function(doc, cdt, cdn) {
 			let row = locals[cdt][cdn];
             return {
@@ -44,7 +45,8 @@ frappe.ui.form.on("Opportunity", {
                 if (i.is_group){
                     latest_group = parseInt(i.series_number)
                     latest_sub = 0;
-                    group_item = i.item_code;
+                    if (i.group_item) group_item = i.group_item;
+                    else group_item = i.item_code;
                 }
                 else if (i.series_number) {
                     [latest_group, latest_sub] = get_group_sub(i.series_number)
@@ -68,7 +70,7 @@ frappe.ui.form.on("Opportunity Item", {
     },
     item_code: function(frm, cdt, cdn){
         let row = locals[cdt][cdn];
-        if (row.is_group) row.group_item = row.item_code;
+        if (row.is_group == 1) row.group_item = row.item_code;
     },
     items_add: function(frm ,cdt, cdn){
         frappe.model.set_value(cdt, cdn, "rate", 0.00);
