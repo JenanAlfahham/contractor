@@ -10,6 +10,14 @@ frappe.ui.form.on('Costing Note', {
 				}
 			}
 		});
+		frm.set_query("item", "costing_note_items", function(doc, cdt, cdn) {
+			let row = locals[cdt][cdn];
+            return {
+				filters: {
+					is_group: row.is_group
+				}
+			}
+		});
 	},
 	onload: function(frm){
 		frm.trigger('setup_queries');
@@ -49,9 +57,6 @@ frappe.ui.form.on('Costing Note', {
 frappe.ui.form.on('Costing Note Items', {
 	boq: function(frm, cdt, cdn){
 		let row = locals[cdt][cdn];
-		if (row.item == "Unknown" || row.item == "Unknown Group"){
-			frappe.throw("You haven't set a correct Item Code for this Item yet");
-		}
 		frappe.model.open_mapped_doc({
 			method: "contractor.www.api.create_boq",
 			frm: frm,
