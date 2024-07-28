@@ -4,7 +4,7 @@ from frappe.model.mapper import get_mapped_doc
 
 from contractor.contractor_app.doctype.boq.boq import set_boq_template
 
-# Custom Validation for Opportunity & Project
+# Custom Validation for Opportunity, Quotation, Sales Order & Project
 def validate(doc, method=None):
     set_series_number(doc)
     set_rate_of_group_items(doc)
@@ -13,7 +13,6 @@ def validate(doc, method=None):
 
 def on_update_after_submit(doc, method=None):
     if doc.doctype == "Sales Order":
-        print("#####")
         set_qtys(doc)
 
 def set_series_number(doc):
