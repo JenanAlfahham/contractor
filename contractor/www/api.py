@@ -8,7 +8,12 @@ from contractor.contractor_app.doctype.boq.boq import set_boq_template
 def validate(doc, method=None):
     set_series_number(doc)
     set_rate_of_group_items(doc)
-    if doc.doctype == "Project":
+    if doc.doctype == "Project" or doc.doctype == "Sales Order":
+        set_qtys(doc)
+
+def on_update_after_submit(doc, method=None):
+    if doc.doctype == "Sales Order":
+        print("#####")
         set_qtys(doc)
 
 def set_series_number(doc):
@@ -69,7 +74,11 @@ def set_rate_of_group_items(doc):
         doc.append("group_items", new_item)
 
 def set_qtys(doc):
-    cleas = frappe.db.get_all("Clearence", {"project": doc.name, "docstatus": 1}, "name")
+    if doc.doctype == "Project":
+        cleas = frappe.db.get_all("Clearence", {"project": doc.name, "docstatus": 1}, "name")
+    elif doc.doctype == "Sales Order":
+        cleas = frappe.db.get_all("Clearence", {"sales_order": doc.name, "docstatus": 1}, "name")
+    
     groups = {}
     for clea in cleas:
         d = frappe.get_doc("Clearence", clea.name)
@@ -85,6 +94,9 @@ def set_qtys(doc):
         if groups.get(parent.group_item):
             parent.completed_qty = groups[parent.group_item]
             parent.completion_percentage = parent.completed_qty / parent.qty * 100
+
+            frappe.db.set_value("Group Item", parent.name, "completed_qty", parent.completed_qty)
+            frappe.db.set_value("Group Item", parent.name, "completion_percentage", parent.completion_percentage)
 
 
 
@@ -168,11 +180,6 @@ def create_boq(source_name, target_doc=None):
         target_doc,
         set_missing_values,
     )
-    
-    tables = set_boq_template(doc.item)
-
-    for table in tables:
-        doc.update({table: tables[table]})
 
     return doc
 
@@ -180,10 +187,13 @@ def create_boq(source_name, target_doc=None):
 def create_clearence(source_name, target_doc=None):
 
     def set_missing_values(source, target):
+        target.advance_payment_discount = source.advance_payment_discount
+        target.business_guarantee_insurance_deduction_rate = source.business_guarantee_insurance_deduction_rate
+        
         if source.project:
             project = frappe.get_doc("Project", source.project)
-            target.advance_payment_discount = project.advance_payment_discount
-            target.business_guarantee_insurance_deduction_rate = project.business_guarantee_insurance_deduction_rate
+            if not target.advance_payment_discount: target.advance_payment_discount = project.advance_payment_discount
+            if not target.business_guarantee_insurance_deduction_rate: target.business_guarantee_insurance_deduction_rate = project.business_guarantee_insurance_deduction_rate
             target.contract_date = project.date
 
         for item in source.items:
@@ -205,7 +215,8 @@ def create_clearence(source_name, target_doc=None):
                 "validation": {"docstatus": ["=", 1]},
                 "field_map": {
                     "transaction_date": "posting_date",
-                    "name": "sales_order"
+                    "name": "sales_order",
+                    "delivery_date": "delivery_date"
                 }
             },
             "Sales Order Item": {
