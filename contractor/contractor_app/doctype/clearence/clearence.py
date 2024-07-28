@@ -20,6 +20,7 @@ from erpnext.controllers.accounts_controller import (
 	validate_taxes_and_charges,
 )
 
+from contractor.www.api import set_qtys
 
 force_item_fields = (
 	"item_group",
@@ -71,7 +72,7 @@ class Clearence(Document):
 	def validate(self):
 		frappe.flags.round_off_applicable_accounts = []
 		if not self.project:
-			self.project = frappe.db.get_value("Sales Order", clearence.project, "project")
+			self.project = frappe.db.get_value("Sales Order", self.project, "project")
 
 		get_round_off_applicable_accounts(frappe.flags.round_off_applicable_accounts)
 		self._calculate()
@@ -612,11 +613,19 @@ def create_a_payment(clearence):
 	
 	frappe.msgprint(f"A Journal Entry is created. Check it from here: <br><b><a href='/app/journal-entry/{je.name}'>{je.name}</a></b>")
 
-	if not clearence.project: return
+	if clearence.project:
 
-	project = frappe.get_doc("Project", clearence.project)
+		project = frappe.get_doc("Project", clearence.project)
+		set_qtys(project)
 
-	project.save(ignore_permissions=True)
+		project.save(ignore_permissions=True)
+	
+	if clearence.sales_order:
+		sales_order = frappe.get_doc("Sales Order", clearence.sales_order)
+		set_qtys(sales_order)
+
+		sales_order.save(ignore_permissions=True)
+
 
 
 
