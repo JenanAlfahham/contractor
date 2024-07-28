@@ -1,12 +1,13 @@
 {
  "actions": [],
- "autoname": "field:item_code",
+ "autoname": "field:template_name",
  "creation": "2024-07-24 21:56:09.698931",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "template_name",
   "item_code",
   "section_break_afdcv",
   "material_costs",
@@ -24,8 +25,7 @@
    "in_list_view": 1,
    "label": "Item Code",
    "options": "Item",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "section_break_afdcv",
@@ -66,11 +66,18 @@
    "fieldtype": "Table",
    "label": "Expenses Table",
    "options": "Expenses Table"
+  },
+  {
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "label": "Template Name",
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-24 21:56:13.900183",
+ "modified": "2024-07-28 13:38:23.790205",
  "modified_by": "Administrator",
  "module": "Contractor App",
  "name": "Template BOQ",
