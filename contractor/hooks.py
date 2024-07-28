@@ -129,6 +129,13 @@ doc_events = {
 	"Opportunity": {
 		"validate": "contractor.www.api.validate",
 	},
+	"Quotation": {
+		"validate": "contractor.www.api.validate",
+	},
+	"Sales Order": {
+		"validate": "contractor.www.api.validate",
+		"on_update_after_submit": "contractor.www.api.on_update_after_submit"
+	},
 	"Project": {
 		"validate": "contractor.www.api.validate",
 	},
