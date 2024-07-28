@@ -54,13 +54,13 @@ class BOQ(Document):
 
 
 @frappe.whitelist()
-def set_boq_template(item_code):
+def set_boq_template(boq_template):
 
-	if not frappe.db.exists("Template BOQ", item_code): return
+	if not frappe.db.exists("Template BOQ", boq_template): return
 
 	tables = {}
 
-	temp = frappe.get_doc("Template BOQ", item_code)
+	temp = frappe.get_doc("Template BOQ", boq_template)
 
 	for table in ["material_costs", "labor_costs", "contractors_table", "expenses_table"]:
 		if temp.get(table):

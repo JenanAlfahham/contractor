@@ -10,16 +10,23 @@ frappe.ui.form.on('BOQ', {
 				}
 			}
 		});
+		frm.set_query("boq_template", function() {
+			return{
+				"filters": {
+					"item_code": frm.doc.item,
+				}
+			}
+		});
 	},
 	onload: function(frm){
 		frm.trigger('setup_queries');
 	},
-	item: function(frm){
-		if (frm.doc.item){
+	boq_template: function(frm){
+		if (frm.doc.item && frm.doc.boq_template){
 			frappe.call({
 				"method": "contractor.contractor_app.doctype.boq.boq.set_boq_template",
 				"args": {
-					"item_code": frm.doc.item,
+					"boq_template": frm.doc.boq_template,
 					"doc": frm.doc
 				},
 				callback: function(r){
