@@ -90,15 +90,15 @@ class Clearence(Document):
 
 	def calculate_project_discount_rates(self):
 		if self.advance_payment_discount:
-			self.advance_payment_discount_rate = self.grand_total * self.advance_payment_discount / 100
-			self.base_advance_payment_discount_rate = self.advance_payment_discount_rate * self.conversion_rate
+			self.advance_payment_discount_rate = flt(self.rounded_total * self.advance_payment_discount / 100, self.precision("rounded_total"))
+			self.base_advance_payment_discount_rate = flt(self.advance_payment_discount_rate * self.conversion_rate, self.precision("rounded_total"))
 
 		if self.business_guarantee_insurance_deduction_rate:
-			self.business_insurance_discount_rate_value = self.grand_total * self.business_guarantee_insurance_deduction_rate / 100
-			self.base_business_insurance_discount_rate_value = self.business_insurance_discount_rate_value * self.conversion_rate
+			self.business_insurance_discount_rate_value = flt(self.rounded_total * self.business_guarantee_insurance_deduction_rate / 100, self.precision("rounded_total"))
+			self.base_business_insurance_discount_rate_value = flt(self.business_insurance_discount_rate_value * self.conversion_rate, self.precision("rounded_total"))
 
 		self.total_after_deductions = self.base_business_insurance_discount_rate_value + self.base_advance_payment_discount_rate
-		self.current_amount = self.base_grand_total - self.total_after_deductions
+		self.current_amount = self.base_rounded_total - self.total_after_deductions
 	
 	def calculate_item_values(self):
 		for item in self.get("items"):
@@ -458,7 +458,7 @@ def get_round_off_applicable_accounts(account_list):
 	return 
 
 
-def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
+def make_sales_invoice(clearence, target_doc=None, ignore_permissions=False):
 	def postprocess(source, target):
 		set_missing_values(source, target)
 		# Get the advance paid Journal Entries in Sales Invoice Advance
@@ -467,7 +467,7 @@ def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
 
 	def set_missing_values(source, target):
 		target.update_stock = 1
-		target.disable_rounded_total = 1
+		#target.disable_rounded_total = 1
 		target.flags.ignore_permissions = True
 		target.run_method("set_missing_values")
 		target.run_method("set_po_nos")
@@ -489,13 +489,11 @@ def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
 		target.debit_to = get_party_account("Customer", source.customer, source.company)
 
 	def update_item(source, target, source_parent):
-		target.amount = flt(source.amount) - flt(source.billed_amt)
-		target.base_amount = target.amount * flt(source_parent.conversion_rate)
-		target.qty = (
-			target.amount / flt(source.rate)
-			if (source.rate and source.billed_amt)
-			else source.qty - source.returned_qty
-		)
+		for item in clearence.items:
+			if source.item_code == item.item_code and source.group_item == item.group_item:
+				target.qty = item.qty
+				target.rate = item.rate
+				break
 
 		if source_parent.project:
 			target.cost_center = frappe.db.get_value("Project", source_parent.project, "cost_center")
@@ -507,6 +505,7 @@ def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
 			if cost_center:
 				target.cost_center = cost_center
 
+	source_name = clearence.sales_order
 	doclist = get_mapped_doc(
 		"Sales Order",
 		source_name,
@@ -555,7 +554,9 @@ def create_a_payment(clearence):
 
 	if not clearence.sales_order: return
 
-	si = make_sales_invoice(clearence.sales_order)
+	si = make_sales_invoice(clearence)
+
+	si.insert()
 	si.submit()
 
 	frappe.db.set_value("Clearence", clearence.name, "sales_invoice", si.name)
@@ -574,7 +575,7 @@ def create_a_payment(clearence):
 		"account": debtors,
 		"party_type": "Customer",
 		"party": clearence.customer,
-		"credit_in_account_currency": clearence.base_grand_total,
+		"credit_in_account_currency": flt(clearence.base_rounded_total, 3),
 		"reference_type": "Sales Invoice",
 		"reference_name": si.name
 		}
@@ -586,7 +587,7 @@ def create_a_payment(clearence):
 		accounts.append(frappe._dict(
 			{
 			"account": default_business_guarantee_insurance_account,
-			"debit_in_account_currency": clearence.base_business_insurance_discount_rate_value,
+			"debit_in_account_currency": flt(clearence.base_business_insurance_discount_rate_value, 3),
 			}
 		))
 
@@ -597,14 +598,14 @@ def create_a_payment(clearence):
 		accounts.append(frappe._dict(
 			{
 			"account": advance_payment_discount_account,
-			"debit_in_account_currency": clearence.base_advance_payment_discount_rate,
+			"debit_in_account_currency": flt(clearence.base_advance_payment_discount_rate, 3),
 			}
 		))
 
 	accounts.append(frappe._dict(
 		{
 		"account": default_income_account,
-		"debit_in_account_currency": clearence.current_amount,
+		"debit_in_account_currency": flt(clearence.current_amount, 3),
 		}
 	))
 
