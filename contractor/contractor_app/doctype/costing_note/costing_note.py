@@ -63,9 +63,9 @@ class CostingNote(Document):
 
 				for item in opp.items:
 					if item.item_description == row.item_description and\
-					 item.series_number == row.series_number and\
-					 item.group_item == row.group_item:
+					 item.series_number == row.series_number:
 						item.item_code = row.item
+						item.group_item = row.group_item
 						item.item_group = row.item_group
 						item.uom = row.uom
 						item.item_name = frappe.db.get_value("Item", row.item, "item_name")
