@@ -34,6 +34,7 @@ fixtures = [
 		["dt", "=", "Project"],
 		["dt", "=", "Quotation Item"],
 		["dt", "=", "Sales Order Item"],
+		["dt", "=", "Sales Order"],
 		["dt", "=", "Company"]
 	]},
 
