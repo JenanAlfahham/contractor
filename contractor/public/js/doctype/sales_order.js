@@ -17,6 +17,11 @@ contractor.selling.CustomSalesOrderController = class CustomSalesOrderController
                 this.create_clearence();
             }, __('Create'))
         }
+        else if (this.frm.doc.docstatus == 0){
+            me.frm.add_custom_button(__("Costing Note"), () => {
+                this.create_costing_note();
+            }, __('Create'))
+        }
     }
     make_project() {
 		frappe.model.open_mapped_doc({
@@ -28,6 +33,15 @@ contractor.selling.CustomSalesOrderController = class CustomSalesOrderController
         frappe.model.open_mapped_doc({
 			method: "contractor.www.api.create_clearence",
 			frm: this.frm
+		})
+    }
+    create_costing_note(){
+        frappe.model.open_mapped_doc({
+			method: "contractor.www.api.create_costing_note",
+			frm: this.frm,
+            args: {
+                doctype: "Sales Order"
+            }
 		})
     }
 }
