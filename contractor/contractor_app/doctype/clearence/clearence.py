@@ -3,6 +3,7 @@
 
 import json
 import datetime
+from copy import deepcopy
 
 import frappe
 from frappe.model.document import Document
@@ -466,7 +467,7 @@ def make_sales_invoice(clearence, target_doc=None, ignore_permissions=False):
 			target.set_advances()
 
 	def set_missing_values(source, target):
-		target.update_stock = 1
+		#target.update_stock = 1
 		#target.disable_rounded_total = 1
 		target.flags.ignore_permissions = True
 		target.run_method("set_missing_values")
@@ -489,12 +490,6 @@ def make_sales_invoice(clearence, target_doc=None, ignore_permissions=False):
 		target.debit_to = get_party_account("Customer", source.customer, source.company)
 
 	def update_item(source, target, source_parent):
-		for item in clearence.items:
-			if source.item_code == item.item_code and source.group_item == item.group_item:
-				target.qty = item.qty
-				target.rate = item.rate
-				break
-
 		if source_parent.project:
 			target.cost_center = frappe.db.get_value("Project", source_parent.project, "cost_center")
 		if target.item_code:
@@ -537,6 +532,28 @@ def make_sales_invoice(clearence, target_doc=None, ignore_permissions=False):
 		ignore_permissions=ignore_permissions,
 	)
 
+	newitems = []
+	for source in doclist.items:
+		found = False
+		group_item = frappe.db.get_value("Sales Order Item", {
+			"parent": source_name, 
+			"docstatus": 1,
+			"name": source.so_detail
+		}, "group_item")
+
+		for item in clearence.items:
+
+			if source.item_code == item.item_code and group_item == item.group_item:
+				source.qty = item.qty
+				source.rate = item.rate
+				found = True
+				break
+
+		if found:
+			newitems.append(source)
+
+	doclist.update({"items": newitems})
+
 	automatically_fetch_payment_terms = cint(
 		frappe.db.get_single_value("Accounts Settings", "automatically_fetch_payment_terms")
 	)
@@ -544,8 +561,53 @@ def make_sales_invoice(clearence, target_doc=None, ignore_permissions=False):
 		doclist.set_payment_schedule()
 
 	doclist.set_onload("ignore_price_list", True)
-	
+
 	return doclist
+
+
+def make_delivery_note(clearence, sales_invoice):
+	from erpnext.accounts.doctype.sales_invoice.sales_invoice import make_delivery_note
+
+	doc = make_delivery_note(sales_invoice)
+	
+	boqs = frappe.db.sql(f"""
+		select distinct boq.name, boq.item, cni.group_item, 
+		m.item as m_item, m.qty as m_qty, m.cost as m_rate, m.total_cost as m_amount
+		from `tabCosting Note` as cn
+		inner join `tabCosting Note Items` cni on cn.name = cni.parent
+		inner join `tabBOQ` as boq on boq.costing_note = cn.name and boq.line_id = cni.name
+		inner join `tabMaterial costs` as m on m.parent = boq.name
+		where cn.docstatus = 1 and boq.docstatus = 1 and cn.opportunity = '{clearence.opportunity}'
+	""", as_dict = 1)
+
+	
+	items = deepcopy(doc.items)
+	for item in items:
+		if frappe.db.get_value("Item", item.item_code, "is_group"): continue
+
+		group_item = frappe.db.get_value("Sales Order Item", {
+			"parent": clearence.sales_order, 
+			"docstatus": 1,
+			"name": item.so_detail
+		}, "group_item")
+
+		for i in boqs:
+			if i.item == item.item_code and i.group_item == group_item:
+				print(i.m_item, ", ", i.m_rate)
+				doc.append("items", {
+					"item_code": i.m_item,
+					"item_name": frappe.db.get_value("Item", i.m_item, "item_name"),
+					"uom": frappe.db.get_value("Item", i.m_item, "stock_uom"),
+					"qty": i.m_qty,
+					"rate": i.m_rate,
+					"amount": i.m_amount,
+					"against_sales_order": clearence.sales_order,
+					"against_sales_invoice": item.against_sales_invoice
+				})
+
+
+	return doc
+
 	
 def create_a_payment(clearence):
 
@@ -558,6 +620,12 @@ def create_a_payment(clearence):
 
 	si.insert()
 	si.submit()
+
+	dn = make_delivery_note(clearence, si.name)
+
+	if dn:
+		dn.insert()
+		dn.submit()
 
 	frappe.db.set_value("Clearence", clearence.name, "sales_invoice", si.name)
 
