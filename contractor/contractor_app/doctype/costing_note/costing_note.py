@@ -9,18 +9,31 @@ class CostingNote(Document):
 		self.update_prices_and_costs()
 
 	def on_submit(self):
-		self.update_opportunity()
+		self.update_linked_doc()
 
 	def on_cancel(self):
-		doc = frappe.get_doc("Opprtunity", self.opportunity)
-		for row in self.costing_note_items:
-			for item in doc.items:
-				if item.item_code == row.item and item.group_item == row.group_item:
-					if item.rate <= row.target_selling_price:
-						item.rate -= row.target_selling_price
-					else: item.rate = 0
-					break
-		doc.save(ignore_permissions=True)
+		if self.opportunity:
+			doc = frappe.get_doc("Opprtunity", self.opportunity)
+			for row in self.costing_note_items:
+				for item in doc.items:
+					if item.item_code == row.item and item.group_item == row.group_item:
+						if item.rate <= row.target_selling_price:
+							item.rate -= row.target_selling_price
+						else: item.rate = 0
+						break
+			doc.save(ignore_permissions=True)
+
+		elif self.sales_order:
+			doc = frappe.get_doc("Sales Order", self.sales_order)
+			for row in self.costing_note_items:
+				for item in doc.items:
+					if item.item_code == row.item and item.group_item == row.group_item:
+						if item.rate <= row.target_selling_price:
+							item.rate -= row.target_selling_price
+						else: item.rate = 0
+						break
+			doc.save(ignore_permissions=True)
+
 
 	def update_prices_and_costs(self):
 		rates = {}
@@ -53,7 +66,7 @@ class CostingNote(Document):
 			})
 			self.append("group_items", new_item)
 
-	def update_opportunity(self):
+	def update_linked_doc(self):
 		if self.opportunity:
 			opp = frappe.get_doc("Opportunity", self.opportunity)
 
@@ -75,3 +88,27 @@ class CostingNote(Document):
 						break
 
 			opp.save(ignore_permissions=True)
+		
+		elif self.sales_order:
+			so = frappe.get_doc("Sales Order", self.sales_order)
+
+			for row in self.costing_note_items:
+				if row.item == "Unknown" or row.item == "Unknown Group":
+					frappe.throw("Row {}: No Correct Item Code is Set".format(row.idx))
+
+				for item in so.items:
+					# if (item.item_description == row.item_description and\
+					#  item.series_number == row.series_number) or\
+					#  item.item_code == row.item_code and item.group_item == row.group_item:
+					if item.item_code == row.item and item.group_item == row.group_item:
+						# item.item_code = row.item
+						# item.group_item = row.group_item
+						# item.item_group = row.item_group
+						# item.uom = row.uom
+						# item.item_name = frappe.db.get_value("Item", row.item, "item_name")
+						# item.description = frappe.db.get_value("Item", row.item, "description")
+						item.rate = row.target_selling_price / row.qty
+						item.amount = row.target_selling_price
+						break
+			
+			so.save(ignore_permissions=True)
