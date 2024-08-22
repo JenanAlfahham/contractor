@@ -133,15 +133,23 @@ def make_project(source_name, target_doc=None):
 
 @frappe.whitelist()
 def create_costing_note(source_name, target_doc=None):
+    doctype = frappe.flags.args.doctype
+
+    if doctype == "Opportunity":
+        field_map = {"name": "opportunity", "opportunity_from": "party_type"}
+
+    else:
+        field_map = {"name": "sales_order", "customer": "party_name"}
+
     doc = get_mapped_doc(
-        "Opportunity",
+        doctype,
         source_name,
         {
-            "Opportunity": {
+            doctype: {
                 "doctype": "Costing Note",
-                "field_map": {"name": "opportunity", "opportunity_from": "party_type"},
+                "field_map": field_map,
             },
-            "Opportunity Item": {
+            doctype + " Item": {
                 "doctype": "Costing Note Items",
                 "field_map": {"item_code": "item", "amount": "target_selling_price"},
                 #"condition": lambda doc: not doc.is_group,
@@ -152,6 +160,8 @@ def create_costing_note(source_name, target_doc=None):
         },
         target_doc,
     )
+
+    if doctype == "Sales Order": doc.party_type = "Customer"
     return doc
 
 
