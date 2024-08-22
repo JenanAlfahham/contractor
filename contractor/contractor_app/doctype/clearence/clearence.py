@@ -577,9 +577,10 @@ def make_delivery_note(clearence, sales_invoice):
 		inner join `tabCosting Note Items` cni on cn.name = cni.parent
 		inner join `tabBOQ` as boq on boq.costing_note = cn.name and boq.line_id = cni.name
 		inner join `tabMaterial costs` as m on m.parent = boq.name
-		where cn.docstatus = 1 and boq.docstatus = 1 and cn.opportunity = '{clearence.opportunity}'
+		where cn.docstatus = 1 and boq.docstatus = 1 and (cn.opportunity = '{clearence.opportunity}' or cn.sales_order = '{clearence.sales_order}')
 	""", as_dict = 1)
 
+	if not boqs: return
 	
 	items = deepcopy(doc.items)
 	for item in items:
