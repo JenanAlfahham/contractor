@@ -11,6 +11,7 @@
   "naming_series",
   "project",
   "opportunity",
+  "sales_order",
   "column_break_u5cmu",
   "date",
   "party_type",
@@ -70,6 +71,13 @@
    "in_list_view": 1,
    "label": "Opportunity",
    "options": "Opportunity"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sales Order",
+   "options": "Sales Order"
   },
   {
    "fieldname": "column_break_u5cmu",
