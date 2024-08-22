@@ -16,7 +16,10 @@ frappe.ui.form.on("Opportunity", {
     create_costing_note: function(frm){
         frappe.model.open_mapped_doc({
 			method: "contractor.www.api.create_costing_note",
-			frm: frm
+			frm: frm,
+            args: {
+                "doctype": "Opportunity"
+            }
 		})
     },
     set_series_number: function(frm, row){
