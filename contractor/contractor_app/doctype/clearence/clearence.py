@@ -594,7 +594,6 @@ def make_delivery_note(clearence, sales_invoice):
 
 		for i in boqs:
 			if i.item == item.item_code and i.group_item == group_item:
-				print(i.m_item, ", ", i.m_rate)
 				doc.append("items", {
 					"item_code": i.m_item,
 					"item_name": frappe.db.get_value("Item", i.m_item, "item_name"),
@@ -634,7 +633,7 @@ def create_a_payment(clearence):
 	je.posting_date = nowdate()
 	accounts = []
 
-	debtors, default_business_guarantee_insurance_account, advance_payment_discount_account, default_income_account = frappe.db.get_value("Company", clearence.company, ["default_receivable_account", "default_business_guarantee_insurance_account", "advance_payment_discount_account", "default_income_account"])
+	debtors, default_business_guarantee_insurance_account, advance_payment_discount_account = frappe.db.get_value("Company", clearence.company, ["default_receivable_account", "default_business_guarantee_insurance_account", "advance_payment_discount_account"])
 
 	if not debtors:
 		return
@@ -644,7 +643,7 @@ def create_a_payment(clearence):
 		"account": debtors,
 		"party_type": "Customer",
 		"party": clearence.customer,
-		"credit_in_account_currency": flt(clearence.base_rounded_total, 3),
+		"credit_in_account_currency": flt(clearence.total_after_deductions, 3),
 		"reference_type": "Sales Invoice",
 		"reference_name": si.name
 		}
@@ -671,12 +670,12 @@ def create_a_payment(clearence):
 			}
 		))
 
-	accounts.append(frappe._dict(
-		{
-		"account": default_income_account,
-		"debit_in_account_currency": flt(clearence.current_amount, 3),
-		}
-	))
+	# accounts.append(frappe._dict(
+	# 	{
+	# 	"account": default_income_account,
+	# 	"debit_in_account_currency": flt(clearence.current_amount, 3),
+	# 	}
+	# ))
 
 	je.update({"accounts": accounts})
 	je.insert(ignore_permissions=True)
