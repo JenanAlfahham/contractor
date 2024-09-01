@@ -2,13 +2,22 @@ frappe.ui.form.on("Opportunity", {
     refresh: function(frm){
         frm.set_df_property("items", "allow_bulk_edit", 1);
         frm.set_query("item_code", "items", function(doc, cdt, cdn) {
-			let row = locals[cdt][cdn];
-            return {
-				filters: {
-					is_group: row.is_group
-				}
-			}
-		});
+            let row = locals[cdt][cdn];
+            if (row.is_group == 1){
+                return {
+                    filters: {
+                        is_group: row.is_group
+                    }
+                }
+            }
+            else {
+                return {
+                    filters: {
+                        group_item: row.parent_group
+                    }
+                }
+            }
+        });
         frm.add_custom_button(__("Costing Note"), function(){
             frm.trigger("create_costing_note");
         }, __("Create"))
@@ -68,18 +77,38 @@ frappe.ui.form.on("Opportunity", {
 frappe.ui.form.on("Opportunity Item", {
     is_group: function(frm ,cdt, cdn){
         let row = locals[cdt][cdn];
-        if (row.is_group && row.item_code) row.group_item = row.item_code;
+        if (row.is_group && row.item_code) {
+            row.group_item = row.item_code;
+            row.parent_group = row.item_code;
+        }
+        else {
+            const index = frm.doc.items.length - 2;
+            if (index < 0) return
+            row.parent_group = frm.doc.items[index].parent_group;
+        }
         frm.events.set_series_number(frm, row)
     },
     item_code: function(frm, cdt, cdn){
         let row = locals[cdt][cdn];
-        if (row.is_group == 1) row.group_item = row.item_code;
+        if (row.is_group == 1) {
+            row.group_item = row.item_code;
+            row.parent_group = row.item_code
+        }
+        else {
+            const index = frm.doc.items.length - 2;
+            if (index < 0) return
+            row.parent_group = frm.doc.items[index].parent_group;
+        }
     },
     items_add: function(frm ,cdt, cdn){
         frappe.model.set_value(cdt, cdn, "rate", 0.00);
         frappe.model.set_value(cdt, cdn, "amount", 0.00);
         frappe.model.set_value(cdt, cdn, "base_rate", 0.00);
         frappe.model.set_value(cdt, cdn, "base_amount", 0.00);
+        let row = locals[cdt][cdn];
+        const index = frm.doc.items.length - 2;
+        if (index < 0) return
+        row.parent_group = frm.doc.items[index].parent_group;
     }
     
 })
