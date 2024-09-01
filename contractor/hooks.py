@@ -43,6 +43,10 @@ fixtures = [
 		["doc_type", "=", "Quotation Item"],
 		["doc_type", "=", "Sales Order Item"],
 	]},
+	{"dt": "DocType Link", "or_filters": [
+		["parent", "=", "Opportunity"],
+		["parent", "=", "Sales Order"],
+	]}
 ]
 
 # include js in page
