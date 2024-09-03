@@ -1,8 +1,12 @@
 // Copyright (c) 2024, Contractor and contributors
 // For license information, please see license.txt
 
-{% include 'erpnext/selling/sales_common.js' %}
 frappe.provide("contractor");
+
+cur_frm.cscript.tax_table = "Sales Taxes and Charges";
+
+erpnext.accounts.taxes.setup_tax_filters("Sales Taxes and Charges");
+erpnext.sales_common.setup_selling_controller();
 
 contractor.ClearenceController = class ClearenceController extends erpnext.selling.SellingController {
 	setup(doc) {
