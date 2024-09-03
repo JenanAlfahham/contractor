@@ -601,8 +601,8 @@ def make_delivery_note(clearence, sales_invoice):
 					"qty": i.m_qty,
 					"rate": i.m_rate,
 					"amount": i.m_amount,
-					"against_sales_order": clearence.sales_order,
-					"against_sales_invoice": item.against_sales_invoice
+					# "against_sales_order": clearence.sales_order,
+					# "against_sales_invoice": item.against_sales_invoice
 				})
 
 
