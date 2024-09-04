@@ -25,10 +25,12 @@ def set_series_number(doc):
     latest_group = 0
     latest_sub = 0
     group_item = None
+    series = "series_number"
+    if doc.doctype == "Clearence": series = "series"
     for item in doc.items:
         if item.is_group:
             latest_group += 1 
-            if not item.series_number: item.series_number = latest_group
+            if not item.get(series): item[series] = latest_group
             latest_sub = 0
             if item.group_item: 
                 group_item = item.group_item
@@ -37,7 +39,7 @@ def set_series_number(doc):
         else:
             if latest_group == 0: continue
             latest_sub += 1
-            if not item.series_number: item.series_number = str(latest_group) + "_" + str(latest_sub)
+            if not item.get(series): item[series] = str(latest_group) + "_" + str(latest_sub)
 
         item.group_item = group_item
 
@@ -47,9 +49,11 @@ def set_rate_of_group_items(doc):
     the total amount of its sub items
     """
     rates = {}
+    series = "series_number"
+    if doc.doctype == "Clearence": series = "series"
     for item in doc.items:
-        if not item.is_group and item.series_number:
-            group = int(item.series_number.split('_')[0])
+        if not item.is_group and item.get(series):
+            group = int(item.get(series).split('_')[0])
 
             if not rates.get((item.group_item, group)): 
                 rates[(item.group_item, group)] = [0, 0]
@@ -57,10 +61,11 @@ def set_rate_of_group_items(doc):
             rates[(item.group_item, group)][0] += flt(item.amount)
             rates[(item.group_item, group)][1] += flt(item.qty)
         
-        elif item.series_number: 
+        elif item.get(series): 
             item.rate = item.base_rate = item.amount = item.base_amount = 0
 
     doc.group_items = []
+
     for group_item, group in rates:
         new_item = frappe._dict({
             "group_item": group_item,
@@ -233,6 +238,7 @@ def create_clearence(source_name, target_doc=None):
                 "field_map": {
                     "parent": "sales_order",
                     "name": "so_detail",
+                    "series_number": "series"
                 },
             },
             "Sales Taxes and Charges": {"doctype": "Sales Taxes and Charges", "add_if_empty": True},
