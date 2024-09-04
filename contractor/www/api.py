@@ -65,7 +65,7 @@ def set_rate_of_group_items(doc):
             item.rate = item.base_rate = item.amount = item.base_amount = 0
 
     doc.group_items = []
-    print(rates)
+
     for group_item, group in rates:
         new_item = frappe._dict({
             "group_item": group_item,
