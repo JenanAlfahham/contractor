@@ -21,7 +21,7 @@ from erpnext.controllers.accounts_controller import (
 	validate_taxes_and_charges,
 )
 
-from contractor.www.api import set_qtys
+from contractor.www.api import set_qtys, set_rate_of_group_items, set_series_number
 
 force_item_fields = (
 	"item_group",
@@ -78,6 +78,8 @@ class Clearence(Document):
 		get_round_off_applicable_accounts(frappe.flags.round_off_applicable_accounts)
 		self._calculate()
 		self.calculate_project_discount_rates()
+		set_series_number(self)
+		set_rate_of_group_items(self)
 	
 	def _calculate(self):
 		self.calculate_item_values()
@@ -629,58 +631,59 @@ def create_a_payment(clearence):
 
 	frappe.db.set_value("Clearence", clearence.name, "sales_invoice", si.name)
 
-	je = frappe.new_doc("Journal Entry")
-	je.posting_date = nowdate()
-	accounts = []
+	if clearence.total_after_deductions:
+		je = frappe.new_doc("Journal Entry")
+		je.posting_date = nowdate()
+		accounts = []
 
-	debtors, default_business_guarantee_insurance_account, advance_payment_discount_account = frappe.db.get_value("Company", clearence.company, ["default_receivable_account", "default_business_guarantee_insurance_account", "advance_payment_discount_account"])
+		debtors, default_business_guarantee_insurance_account, advance_payment_discount_account = frappe.db.get_value("Company", clearence.company, ["default_receivable_account", "default_business_guarantee_insurance_account", "advance_payment_discount_account"])
 
-	if not debtors:
-		return
+		if not debtors:
+			return
 
-	accounts.append(frappe._dict(
-		{
-		"account": debtors,
-		"party_type": "Customer",
-		"party": clearence.customer,
-		"credit_in_account_currency": flt(clearence.total_after_deductions, 3),
-		"reference_type": "Sales Invoice",
-		"reference_name": si.name
-		}
-	))
-	if clearence.base_business_insurance_discount_rate_value:
-		if not default_business_guarantee_insurance_account:
-			frappe.throw("You need to set a Default Business Guarantee Insurance Account for the Company {}".format(clearence.company))
-		
 		accounts.append(frappe._dict(
 			{
-			"account": default_business_guarantee_insurance_account,
-			"debit_in_account_currency": flt(clearence.base_business_insurance_discount_rate_value, 3),
+			"account": debtors,
+			"party_type": "Customer",
+			"party": clearence.customer,
+			"credit_in_account_currency": flt(clearence.total_after_deductions, 3),
+			"reference_type": "Sales Invoice",
+			"reference_name": si.name
 			}
 		))
+		if clearence.base_business_insurance_discount_rate_value:
+			if not default_business_guarantee_insurance_account:
+				frappe.throw("You need to set a Default Business Guarantee Insurance Account for the Company {}".format(clearence.company))
+			
+			accounts.append(frappe._dict(
+				{
+				"account": default_business_guarantee_insurance_account,
+				"debit_in_account_currency": flt(clearence.base_business_insurance_discount_rate_value, 3),
+				}
+			))
 
-	if clearence.base_advance_payment_discount_rate:
-		if not default_business_guarantee_insurance_account:
-			frappe.throw("You need to set a Advance Payment Discount Account for the Company {}".format(clearence.company))
+		if clearence.base_advance_payment_discount_rate:
+			if not default_business_guarantee_insurance_account:
+				frappe.throw("You need to set a Advance Payment Discount Account for the Company {}".format(clearence.company))
+			
+			accounts.append(frappe._dict(
+				{
+				"account": advance_payment_discount_account,
+				"debit_in_account_currency": flt(clearence.base_advance_payment_discount_rate, 3),
+				}
+			))
+
+		# accounts.append(frappe._dict(
+		# 	{
+		# 	"account": default_income_account,
+		# 	"debit_in_account_currency": flt(clearence.current_amount, 3),
+		# 	}
+		# ))
+
+		je.update({"accounts": accounts})
+		je.insert(ignore_permissions=True)
 		
-		accounts.append(frappe._dict(
-			{
-			"account": advance_payment_discount_account,
-			"debit_in_account_currency": flt(clearence.base_advance_payment_discount_rate, 3),
-			}
-		))
-
-	# accounts.append(frappe._dict(
-	# 	{
-	# 	"account": default_income_account,
-	# 	"debit_in_account_currency": flt(clearence.current_amount, 3),
-	# 	}
-	# ))
-
-	je.update({"accounts": accounts})
-	je.insert(ignore_permissions=True)
-	
-	frappe.msgprint(f"A Journal Entry is created. Check it from here: <br><b><a href='/app/journal-entry/{je.name}'>{je.name}</a></b>")
+		frappe.msgprint(f"A Journal Entry is created. Check it from here: <br><b><a href='/app/journal-entry/{je.name}'>{je.name}</a></b>")
 
 	if clearence.project:
 
