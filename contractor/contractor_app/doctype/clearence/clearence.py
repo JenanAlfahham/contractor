@@ -80,7 +80,23 @@ class Clearence(Document):
 		self.calculate_project_discount_rates()
 		set_series_number(self)
 		set_rate_of_group_items(self)
+		self.calculate_amounts()
 	
+	def calculate_amounts(self):
+		total_amount = frappe.db.sql(f"""
+			select sum(current_amount)
+			from `tabClearence` where sales_order = '{self.sales_order}'
+			and docstatus = 1
+		""", as_list = 1)
+		if total_amount and total_amount[0]:
+			total_amount = total_amount[0][0]
+
+			self.previous_amount = total_amount
+
+		base_rounded_total = frappe.db.get_value("Sales Order", self.sales_order, "base_rounded_total")
+		total_without_deductions = base_rounded_total - (base_rounded_total * (self.get("advance_payment_discount", 0) + self.get("business_guarantee_insurance_deduction_rate", 0)) / 100)
+		self.due_amount = total_without_deductions - (total_amount + self.current_amount)
+
 	def _calculate(self):
 		self.calculate_item_values()
 		self.initialize_taxes()
@@ -697,10 +713,3 @@ def create_a_payment(clearence):
 		set_qtys(sales_order)
 
 		sales_order.save(ignore_permissions=True)
-
-
-
-
-
-
-
