@@ -30,7 +30,7 @@ def set_series_number(doc):
     for item in doc.items:
         if item.is_group:
             latest_group += 1 
-            if not item.get(series): item[series] = latest_group
+            if not item.get(series): setattr(item, series, latest_group)
             latest_sub = 0
             if item.group_item: 
                 group_item = item.group_item
@@ -39,7 +39,8 @@ def set_series_number(doc):
         else:
             if latest_group == 0: continue
             latest_sub += 1
-            if not item.get(series): item[series] = str(latest_group) + "_" + str(latest_sub)
+            if not item.get(series):
+                setattr(item, series, str(latest_group) + "_" + str(latest_sub))
 
         item.group_item = group_item
 
@@ -76,6 +77,8 @@ def set_rate_of_group_items(doc):
             "completion_percentage": 0
         })
         doc.append("group_items", new_item)
+
+    print(doc.group_items)
 
 def set_qtys(doc):
     if doc.doctype == "Project":
@@ -246,4 +249,47 @@ def create_clearence(source_name, target_doc=None):
         target_doc,
         set_missing_values,
     )
+
+
+    new_items, idx = [], 1
+
+    c_items = frappe.db.sql(f"""
+        select ci.item_code, sum(ci.qty) as qty
+        from `tabClearence` as c
+        inner join `tabClearence Item` as ci on ci.parent = c.name
+        where c.docstatus = 1 and c.sales_order = '{source_name}' and ci.is_group = 0
+        group by ci.item_code, ci.parent_group
+    """, as_dict = 1)
+
+    new_items = []
+    for item in doclist.items:
+        toremove = False
+        if not item.is_group: 
+            for i in c_items:
+                if i.item_code == item.item_code and i.qty >= item.qty: 
+                    toremove = True
+                    break
+
+                elif i.item_code == item.item_code and i.qty < item.qty: 
+                    item.qty -= i.qty
+                    break
+
+        if not toremove: new_items.append(item)
+
+    groups = [g for g in new_items if g.is_group]
+
+    for g in groups:
+        found = False
+        for item in new_items:
+            if not item.is_group and item.parent_group == g.item_code:
+                found = True
+                break
+        if not found:
+            new_items.remove(g)
+
+    if not new_items:
+        frappe.throw("All Items were Delivered")
+
+    doclist.update({"items": new_items})
+
     return doclist
