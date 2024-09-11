@@ -9,6 +9,7 @@
   "field_order": [
    "is_group",
    "series",
+   "parent_group",
    "type",
    "barcode",
    "group_item",
@@ -121,6 +122,13 @@
      "fieldtype": "Data",
      "in_list_view": 1,
      "label": "Series"
+    },
+    {
+     "fieldname": "parent_group",
+     "fieldtype": "Link",
+     "read_only": 1,
+     "label": "Parent Group",
+     "options": "Item"
     },
     {
      "columns": 1,
