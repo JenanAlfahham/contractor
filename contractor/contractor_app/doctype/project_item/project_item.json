@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "is_group",
+  "group_item",
   "series_number",
   "item_code",
   "item_name",
@@ -30,6 +31,14 @@
    "in_list_view": 1,
    "label": "Is Group"
   },
+  {
+    "fieldname": "group_item",
+    "fieldtype": "Data",
+    "in_list_view": 1,
+    "label": "Group Item",
+    "reqd": 1,
+    "columns":1
+   },
   {
    "columns": 1,
    "fieldname": "series_number",
@@ -84,9 +93,7 @@
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
-   "options": "Item Group",
-   "in_list_view": 1,
-   "columns": 1
+   "options": "Item Group"
   },
   {
    "fieldname": "description",
