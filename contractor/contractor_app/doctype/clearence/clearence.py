@@ -116,6 +116,12 @@ class Clearence(Document):
 			self.business_insurance_discount_rate_value = flt(self.rounded_total * self.business_guarantee_insurance_deduction_rate / 100, self.precision("rounded_total"))
 			self.base_business_insurance_discount_rate_value = flt(self.business_insurance_discount_rate_value * self.conversion_rate, self.precision("rounded_total"))
 
+		if not self.base_business_insurance_discount_rate_value:
+			self.base_business_insurance_discount_rate_value = 0
+
+		if not self.base_advance_payment_discount_rate:
+			self.base_advance_payment_discount_rate = 0
+
 		self.total_after_deductions = self.base_business_insurance_discount_rate_value + self.base_advance_payment_discount_rate
 		self.current_amount = self.base_rounded_total - self.total_after_deductions
 	
