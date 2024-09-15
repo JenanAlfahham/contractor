@@ -93,8 +93,20 @@ class Clearence(Document):
 
 			self.previous_amount = total_amount
 
-		base_rounded_total = frappe.db.get_value("Sales Order", self.sales_order, "base_rounded_total")
-		total_without_deductions = base_rounded_total - (base_rounded_total * (self.get("advance_payment_discount", 0) + self.get("business_guarantee_insurance_deduction_rate", 0)) / 100)
+		if not total_amount: 
+			total_amount = 0
+
+		if not self.advance_payment_discount:
+			self.advance_payment_discount = 0
+
+		if not self.business_guarantee_insurance_deduction_rate:
+			self.business_guarantee_insurance_deduction_rate = 0
+
+		if not self.current_amount:
+			self.current_amount = 0
+
+		base_rounded_total = frappe.db.get_value("Sales Order", self.sales_order, "base_rounded_total") or 0
+		total_without_deductions = base_rounded_total - (base_rounded_total * (self.get("advance_payment_discount", 0) + self.get("business_guarantee_insurance_deduction_rate", 0)) / 100) or 0
 		self.due_amount = total_without_deductions - (total_amount + self.current_amount)
 
 	def _calculate(self):
