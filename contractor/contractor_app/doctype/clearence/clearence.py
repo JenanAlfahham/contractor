@@ -557,7 +557,7 @@ def make_sales_invoice(clearence, target_doc=None, ignore_permissions=False):
 					"parent": "sales_order",
 				},
 				"postprocess": update_item,
-				"condition": lambda doc: doc.qty
+				"condition": lambda doc: doc.qty and not doc.is_group
 				and (doc.base_amount == 0 or abs(doc.billed_amt) < abs(doc.amount)),
 			},
 			"Sales Taxes and Charges": {"doctype": "Sales Taxes and Charges", "add_if_empty": True},
